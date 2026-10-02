@@ -6,7 +6,7 @@ basename каждого файла должен быть уникален — п
     python make_manifest.py --root "C:\\The Lord of the Rings Online" --version 3.4.2 \
         --base-url https://github.com/Invizet/echo-angmara/releases/download/l10n-ru-3.4.2/ --out site/l10n/ru.json
 
-  --local  — откуда брать файлы echoespatch/local (по умолчанию <root>/echoespatch/local_RU_LIVE)
+  --local  — откуда брать файлы echoespatch/local (по умолчанию <root>/echoespatch/local — актуальная установка)
 """
 import argparse
 import datetime
@@ -25,7 +25,8 @@ COMPONENTS = [
     ("xlat", "Русский поиск на аукционе", "Словарь названий предметов: искать на аукционе можно по-русски.",
      ["echoespatch/local/xlat.dat"], []),
     ("video", "Видеоролики", "Ролики с русской озвучкой. Пути к ним прописаны в текстах — без русских текстов игра их не покажет.",
-     ["raw/ru/"], ["text"]),
+     # стартовый ролик клиент берёт из raw/en при первом запуске — кладём русский на его место
+     ["raw/ru/", "raw/en/introcinematic/lotro_intro_cinematic.bik"], ["text"]),
 ]
 
 
@@ -53,7 +54,7 @@ def main():
     ap.add_argument("--notes")
     ap.add_argument("--out", required=True)
     args = ap.parse_args()
-    local_src = args.local or os.path.join(args.root, "echoespatch", "local_RU_LIVE")
+    local_src = args.local or os.path.join(args.root, "echoespatch", "local")
 
     comps, seen = [], {}
     for cid, title, desc, entries, requires in COMPONENTS:
@@ -66,6 +67,8 @@ def main():
             else:
                 rels = [e]
             for rel in rels:
+                if os.path.basename(rel).lower() == "desktop.ini":
+                    continue
                 src = resolve(args.root, local_src, rel)
                 if not os.path.isfile(src):
                     sys.exit(f"Нет файла: {src}")
