@@ -1,3 +1,4 @@
+using static EchoAngmara.Texts;
 using System.Diagnostics;
 using System.IO;
 using System.Net.Http;
@@ -42,7 +43,7 @@ public partial class MainWindow : Window
 
     async void Window_Loaded(object sender, RoutedEventArgs e)
     {
-        VersionText.Text = $"v{typeof(App).Assembly.GetName().Version?.ToString(3)} · официальный лаунчер {App.Official.Version.ToString(3)}";
+        VersionText.Text = T("main.version", ("версия", typeof(App).Assembly.GetName().Version?.ToString(3)), ("версия_официального", App.Official.Version.ToString(3)));
         LoadArt();
         if (!LoadAccounts()) return;
 
@@ -59,8 +60,8 @@ public partial class MainWindow : Window
         try
         {
             if (!await _updater.CheckAndDownloadAsync()) return;
-            SelfUpdateButton.Content = $"Лаунчер обновлён до v{_updater.ReadyVersion} — перезапустить";
-            SelfUpdateButton.ToolTip = "Обновление уже скачано и установится само при закрытии. Можно перезапустить сейчас.";
+            SelfUpdateButton.Content = T("update.ready", ("версия", _updater.ReadyVersion));
+            SelfUpdateButton.ToolTip = T("update.ready_tip");
             SelfUpdateButton.Visibility = Visibility.Visible;
         }
         catch (Exception ex) { Log.Write("Самообновление: " + ex.Message); }
@@ -68,7 +69,7 @@ public partial class MainWindow : Window
 
     void SelfUpdate_Click(object sender, RoutedEventArgs e)
     {
-        if (_busy || LocalizationManager.GameRunning()) { Status("Дождитесь окончания загрузки или закройте игру.", bad: true); return; }
+        if (_busy || LocalizationManager.GameRunning()) { Status(T("update.busy"), bad: true); return; }
         _updater.ApplyAndRestart();
     }
 
@@ -96,14 +97,14 @@ public partial class MainWindow : Window
         _gameDir = Environment.GetEnvironmentVariable("ECHO_GAME_DIR") is { Length: > 0 } dev ? dev : _cfg?.ClientInstallLocation;
         if (_gameDir == null || !File.Exists(Path.Combine(_gameDir, "lotroclient.exe")))
         {
-            Status("Официальный лаунчер ещё не знает, где лежит игра. Запустите его один раз и укажите папку клиента.", bad: true);
+            Status(T("status.no_game_dir"), bad: true);
             return false;
         }
         var withPass = _cfg!.Accounts.Where(a => a.HasPassword).ToList();
         if (withPass.Count == 0)
         {
-            AccountText.Text = "нет сохранённых";
-            Status("В официальном лаунчере нет аккаунтов с сохранённым паролем. Откройте его (ссылка внизу), войдите с галочкой «Save password» и вернитесь — список обновится по кнопке «Аккаунт».", bad: true);
+            AccountText.Text = T("account.none");
+            Status(T("status.no_accounts"), bad: true);
             return true;
         }
         string? last = L10nState.Load().SelectedUser ?? _cfg.SelectedUser;
@@ -128,7 +129,7 @@ public partial class MainWindow : Window
             menu.Items.Add(item);
         }
         if (menu.Items.Count > 0) menu.Items.Add(new Separator());
-        var reload = new MenuItem { Header = "Обновить из официального лаунчера" };
+        var reload = new MenuItem { Header = T("account.reload") };
         reload.Click += (_, _) => { LoadAccounts(); UpdatePlayButton(); };
         menu.Items.Add(reload);
         menu.IsOpen = true;
@@ -136,7 +137,7 @@ public partial class MainWindow : Window
 
     async Task ConnectAsync()
     {
-        Status("Получаем список серверов…");
+        Status(T("status.fetching_servers"));
         var r = await RealmlistFetcher.FetchAsync();
         if (r.Realmlist == null) { Status(r.Error!, bad: true); return; }
         if (r.ExpiredCertAccepted) Log.Write("Сертификат echoesofangmar.com просрочен — принят по исключению");
@@ -148,13 +149,13 @@ public partial class MainWindow : Window
         {
             // сюда попадём, если новое ядро официального лаунчера поменяло API
             Log.Write("Ядро: " + ex);
-            Status("Не удалось подключить официальный лаунчер (возможно, он обновился и нужна новая версия «Эха Ангмара»): " + ex.Message, bad: true);
+            Status(T("status.core_failed", ("причина", ex.Message)), bad: true);
             return;
         }
         if (_session.OfficialOutdated(App.Official.Version))
-            Status("Официальный лаунчер устарел: запустите его, он обновится сам, затем вернитесь сюда.", bad: true);
+            Status(T("status.official_outdated"), bad: true);
         else
-            Status(r.ExpiredCertAccepted ? "Готово. (У сайта Echoes истёк сертификат — мы это обошли.)" : "Готово к игре.");
+            Status(T(r.ExpiredCertAccepted ? "status.ready_cert_fixed" : "status.ready"));
         await RefreshRealmAsync();
         _realmTimer.Start();
         UpdatePlayButton();
@@ -170,20 +171,20 @@ public partial class MainWindow : Window
             if (info == null || !info.Online)
             {
                 RealmDot.Fill = (Brush)FindResource("Bad");
-                RealmText.Text = $"{realm} — недоступен";
+                RealmText.Text = T("realm.offline", ("мир", realm));
             }
             else
             {
                 RealmDot.Fill = (Brush)FindResource("Good");
                 // задел на будущее: онлайн/вместимость/очередь
-                RealmText.Text = info.Queue > 0 ? $"{realm} — очередь {info.Queue}" : $"{realm} — в сети";
-                RealmText.ToolTip = $"Игроков: {info.Num} из {info.Max}";
+                RealmText.Text = info.Queue > 0 ? T("realm.queue", ("мир", realm), ("длина_очереди", info.Queue)) : T("realm.online", ("мир", realm));
+                RealmText.ToolTip = T("realm.players_tip", ("онлайн", info.Num), ("максимум", info.Max));
             }
         }
         catch
         {
             RealmDot.Fill = (Brush)FindResource("Muted");
-            RealmText.Text = $"{realm} — нет связи";
+            RealmText.Text = T("realm.no_connection", ("мир", realm));
         }
     }
 
@@ -194,7 +195,7 @@ public partial class MainWindow : Window
         var feed = await NewsService.LoadAsync(Http, CancellationToken.None);
         if (feed == null || feed.Items.Count == 0)
         {
-            NewsPlaceholder.Text = "Новости пока недоступны. Загляните в канал Telegram.";
+            NewsPlaceholder.Text = T("main.news_unavailable");
             return;
         }
         var doc = new FlowDocument
@@ -236,11 +237,11 @@ public partial class MainWindow : Window
     {
         if (_manifest == null || _l10n == null)
         {
-            L10nText.Text = "хранилище недоступно";
+            L10nText.Text = T("l10n.storage_unavailable");
             L10nButton.Visibility = Visibility.Collapsed;
             return;
         }
-        L10nText.Text = "проверяем файлы…";
+        L10nText.Text = T("l10n.checking_files");
         var selected = _l10n.State.Selected.ToList();
         var check = await Task.Run(() => _l10n.Check(_manifest, selected));
         long missing = check.Where(c => !c.Ok).Sum(c => c.File.Size);
@@ -251,7 +252,7 @@ public partial class MainWindow : Window
             var lang = CurrentLang;
             try { await Task.Run(() => _l10n.Apply(_manifest, lang, selected)); }
             catch (Exception ex) { Log.Write("Раскладка при проверке: " + ex.Message); }
-            L10nText.Text = $"v{_manifest.Version} установлен ✓" + (_manifestFromCache ? " (нет связи — проверка по кэшу)" : "");
+            L10nText.Text = T("l10n.installed", ("версия", _manifest.Version)) + (_manifestFromCache ? T("l10n.installed_cache") : "");
             L10nText.Foreground = (Brush)FindResource("Good");
             L10nButton.Visibility = Visibility.Collapsed;
         }
@@ -259,10 +260,10 @@ public partial class MainWindow : Window
         {
             bool fresh = _l10n.State.InstalledVersion == null;
             L10nText.Text = fresh
-                ? $"v{_manifest.Version} не установлен — {Size(missing)}"
-                : $"вышла v{_manifest.Version} — скачать {Size(missing)}";
+                ? T("l10n.not_installed", ("версия", _manifest.Version), ("размер", Size(missing)))
+                : T("l10n.update_available", ("версия", _manifest.Version), ("размер", Size(missing)));
             L10nText.Foreground = (Brush)FindResource("GoldBright");
-            L10nButton.Content = fresh ? "Скачать" : "Обновить";
+            L10nButton.Content = T(fresh ? "l10n.button_download" : "l10n.button_update");
             L10nButton.Visibility = Visibility.Visible;
         }
     }
@@ -281,18 +282,18 @@ public partial class MainWindow : Window
             {
                 Progress.Maximum = Math.Max(1, p.Total);
                 Progress.Value = p.Done;
-                Status($"Скачиваем перевод: {Size(p.Done)} из {Size(p.Total)}  {p.CurrentFile}");
+                Status(T("status.downloading", ("скачано", Size(p.Done)), ("всего", Size(p.Total)), ("имя_файла", p.CurrentFile)));
             });
             var lang = CurrentLang; // читаем UI здесь — в Task.Run нельзя
             await Task.Run(() => _l10n.InstallAsync(Http, _manifest, ids, progress, CancellationToken.None));
             await Task.Run(() => _l10n.Apply(_manifest, lang, ids));
-            Status($"Перевод v{_manifest.Version} установлен.");
+            Status(T("status.l10n_installed", ("версия", _manifest.Version)));
             return true;
         }
         catch (Exception ex)
         {
             Log.Write("Установка перевода: " + ex);
-            Status("Не удалось установить перевод: " + ex.Message + " Нажмите ещё раз — скачанное докачается.", bad: true);
+            Status(T("status.l10n_failed", ("причина", ex.Message)), bad: true);
             return false;
         }
         finally
@@ -310,7 +311,7 @@ public partial class MainWindow : Window
         if (_suppressLang || _l10n == null) return;
         if (_manifest == null)
         {
-            Status("Сначала нужно связаться с хранилищем перевода.", bad: true);
+            Status(T("status.need_storage"), bad: true);
             RevertLang();
             return;
         }
@@ -318,7 +319,7 @@ public partial class MainWindow : Window
         {
             var lang = CurrentLang;
             await Task.Run(() => _l10n.Apply(_manifest, lang, _l10n.State.Selected.ToList()));
-            Status(lang == GameLanguage.Russian ? "Игра запустится на русском." : "Игра запустится на английском (перевод убран на склад, вернуть — одним кликом).");
+            Status(T(lang == GameLanguage.Russian ? "status.lang_ru" : "status.lang_en"));
         }
         catch (Exception ex)
         {
@@ -336,7 +337,7 @@ public partial class MainWindow : Window
 
     async void Components_Click(object sender, RoutedEventArgs e)
     {
-        if (_manifest == null || _l10n == null) { Status("Состав перевода появится, когда будет связь с хранилищем.", bad: true); return; }
+        if (_manifest == null || _l10n == null) { Status(T("status.components_later"), bad: true); return; }
         var dlg = new Views.ComponentsWindow(_manifest, _l10n.State.Selected) { Owner = this };
         if (dlg.ShowDialog() != true) return;
         _l10n.State.Selected = dlg.Selected;
@@ -354,13 +355,12 @@ public partial class MainWindow : Window
     async void Play_Click(object sender, RoutedEventArgs e)
     {
         if (_session == null || _account == null || _busy) return;
-        if (LocalizationManager.GameRunning()) { Status("Игра уже запущена.", bad: true); return; }
+        if (LocalizationManager.GameRunning()) { Status(T("status.game_running"), bad: true); return; }
 
         // перевод: если выбран русский, а файлов нет — предложим скачать
         if (CurrentLang == GameLanguage.Russian && _manifest != null && _l10n != null && L10nButton.Visibility == Visibility.Visible)
         {
-            var ans = MessageBox.Show(this, "Русский перевод не установлен или устарел. Скачать сейчас?\n\n«Нет» — играть без обновления перевода.",
-                "Эхо Ангмара", MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
+            var ans = MessageBox.Show(this, T("dialog.l10n_before_play"), T("dialog.title"), MessageBoxButton.YesNoCancel, MessageBoxImage.Question);
             if (ans == MessageBoxResult.Cancel) return;
             if (ans == MessageBoxResult.Yes && !await InstallL10nAsync()) return;
         }
@@ -372,15 +372,15 @@ public partial class MainWindow : Window
             string? error = null;
             void OnError(string m) => error = m;
 
-            Status("Вход в аккаунт…");
-            if (!await _session.AuthenticateAsync(acc, OnError)) { Status(error ?? "Вход не удался.", bad: true); return; }
+            Status(T("status.logging_in"));
+            if (!await _session.AuthenticateAsync(acc, OnError)) { Status(error ?? T("status.login_failed"), bad: true); return; }
 
             var realms = _session.Realms;
             var realm = realms.FirstOrDefault(r => r.Name == _cfg?.SelectedServer) ?? realms.FirstOrDefault();
-            if (realm == null) { Status("Сервер не вернул ни одного мира.", bad: true); return; }
-            if (!realm.IsOnline) { Status($"Мир {realm.Name} сейчас недоступен. Следите за новостями.", bad: true); return; }
+            if (realm == null) { Status(T("status.no_realms"), bad: true); return; }
+            if (!realm.IsOnline) { Status(T("status.realm_offline", ("мир", realm.Name)), bad: true); return; }
 
-            Status("Проверяем файлы игры…");
+            Status(T("status.checking_game"));
             Progress.Visibility = Visibility.Visible;
             Progress.IsIndeterminate = true;
             bool patched = await _session.PatchGameAsync(OnError, (total, done) => Dispatcher.Invoke(() =>
@@ -388,9 +388,9 @@ public partial class MainWindow : Window
                 Progress.IsIndeterminate = false;
                 Progress.Maximum = Math.Max(1, total);
                 Progress.Value = done;
-                Status($"Обновляем файлы игры: {Size(done)} из {Size(total)}");
+                Status(T("status.patching_game", ("скачано", Size(done)), ("всего", Size(total))));
             }));
-            if (!patched) { Status(error ?? "Не удалось обновить файлы игры.", bad: true); return; }
+            if (!patched) { Status(error ?? T("status.patch_failed"), bad: true); return; }
 
             // патчер ядра мог что-то поменять — раскладываем перевод заново под выбранный язык
             if (_manifest != null && _l10n != null)
@@ -399,27 +399,27 @@ public partial class MainWindow : Window
                 await Task.Run(() => _l10n.Apply(_manifest, lang, _l10n.State.Selected.ToList()));
             }
 
-            Status($"Подключаемся к миру {realm.Name}…");
+            Status(T("status.connecting_realm", ("мир", realm.Name)));
             bool logged = await _session.LoginAsync(acc, realm.Name, OnError, (total, pos) =>
-                Dispatcher.Invoke(() => Status($"Мир {realm.Name} заполнен. Вы в очереди: {pos + 1} из {total}.")));
-            if (!logged) { Status(error ?? "Не удалось войти в мир.", bad: true); return; }
+                Dispatcher.Invoke(() => Status(T("status.queue", ("мир", realm.Name), ("позиция", pos + 1), ("всего", total)))));
+            if (!logged) { Status(error ?? T("status.realm_failed"), bad: true); return; }
 
             var current = _session.Realms.First(r => r.Name == realm.Name);
-            Status("Запускаем игру…");
+            Status(T("status.launching"));
             _session.LaunchClient(acc, current, () => Dispatcher.Invoke(() =>
             {
                 WindowState = WindowState.Normal;
                 Activate();
-                Status("Игра закрыта.");
+                Status(T("status.game_closed"));
             }));
             await Task.Delay(1500);
             WindowState = WindowState.Minimized;
-            Status("Игра запущена. Приятной игры!");
+            Status(T("status.launched"));
         }
         catch (Exception ex)
         {
             Log.Write("Запуск: " + ex);
-            Status("Ошибка запуска: " + ex.Message, bad: true);
+            Status(T("status.launch_error", ("причина", ex.Message)), bad: true);
         }
         finally
         {
@@ -447,9 +447,9 @@ public partial class MainWindow : Window
 
     static string Size(long bytes) => bytes switch
     {
-        >= 1L << 30 => $"{bytes / (double)(1L << 30):0.0} ГБ",
-        >= 1L << 20 => $"{bytes / (double)(1L << 20):0} МБ",
-        _ => $"{bytes / 1024.0:0} КБ",
+        >= 1L << 30 => T("size.gb", ("число", (bytes / (double)(1L << 30)).ToString("0.0"))),
+        >= 1L << 20 => T("size.mb", ("число", (bytes / (double)(1L << 20)).ToString("0"))),
+        _ => T("size.kb", ("число", (bytes / 1024.0).ToString("0"))),
     };
 
     void Link_Click(object sender, RoutedEventArgs e)
@@ -469,8 +469,10 @@ public partial class MainWindow : Window
 
     void OpenOfficial_Click(object sender, RoutedEventArgs e)
     {
-        try { Process.Start(new ProcessStartInfo(Path.Combine(App.Official.Directory, "EchoesLauncher.exe")) { WorkingDirectory = App.Official.Directory, UseShellExecute = true }); }
-        catch (Exception ex) { Status("Не удалось открыть официальный лаунчер: " + ex.Message, bad: true); }
+        string exe = Path.Combine(App.Official.Directory, "EchoesLauncher.exe");
+        if (!File.Exists(exe)) { Shell.Open(OfficialLauncher.DownloadUrl); return; } // удалили, пока мы работали
+        try { Process.Start(new ProcessStartInfo(exe) { WorkingDirectory = App.Official.Directory, UseShellExecute = true }); }
+        catch (Exception ex) { Status(T("status.open_official_failed", ("причина", ex.Message)), bad: true); }
     }
 
     void Minimize_Click(object sender, RoutedEventArgs e) => WindowState = WindowState.Minimized;

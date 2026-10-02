@@ -1,3 +1,4 @@
+using static EchoAngmara.Texts;
 using System.Diagnostics;
 using System.IO;
 using System.Net.Http;
@@ -46,12 +47,12 @@ public sealed class LocalizationManager
                 byte[]? sig = null;
                 try { sig = await http.GetByteArrayAsync(site + "l10n/ru.json.sig", ct); } catch (HttpRequestException) { }
                 if (!ManifestSignature.Verify(json, sig))
-                    throw new InvalidDataException("Подпись манифеста перевода не сходится — файл подменён или повреждён.");
+                    throw new InvalidDataException(T("error.l10n_signature"));
                 return Manifest.Parse(json);
             }
             catch (Exception ex) when (ex is not OperationCanceledException) { last = ex; }
         }
-        throw new IOException("Не удалось получить сведения о переводе: " + last?.Message, last);
+        throw new IOException(T("error.l10n_info", ("сообщение", last?.Message)), last);
     }
 
     // ---------- состояние ----------
@@ -180,7 +181,7 @@ public sealed class LocalizationManager
                 if (!sha.Equals(f.Sha256, StringComparison.OrdinalIgnoreCase))
                 {
                     File.Delete(part);
-                    throw new InvalidDataException($"{Path.GetFileName(f.Path)}: контрольная сумма не совпала");
+                    throw new InvalidDataException(T("error.l10n_checksum", ("имя_файла", Path.GetFileName(f.Path))));
                 }
                 File.Move(part, dest, overwrite: true);
                 State.Remember(new FileInfo(dest), sha);
@@ -192,7 +193,7 @@ public sealed class LocalizationManager
                 onBytes(-counted); // откатываем прогресс, следующее зеркало начнёт заново или докачает
             }
         }
-        throw new IOException($"Не удалось скачать {Path.GetFileName(f.Path)}: {last?.Message}", last);
+        throw new IOException(T("error.l10n_download", ("имя_файла", Path.GetFileName(f.Path)), ("сообщение", last?.Message)), last);
     }
 
     static async Task<string> Sha256Async(string path, CancellationToken ct)
@@ -206,7 +207,7 @@ public sealed class LocalizationManager
     /// <summary>Раскладывает файлы local\ ↔ склад под язык и выбранные компоненты. Чужие файлы в local\ не трогает.</summary>
     public void Apply(Manifest m, GameLanguage lang, IReadOnlyCollection<string> componentIds)
     {
-        if (GameRunning()) throw new InvalidOperationException("Закройте игру перед сменой языка или набора патчей.");
+        if (GameRunning()) throw new InvalidOperationException(T("error.close_game_first"));
         Directory.CreateDirectory(LocalDir);
         Directory.CreateDirectory(StoreDir);
         var on = componentIds.ToHashSet();

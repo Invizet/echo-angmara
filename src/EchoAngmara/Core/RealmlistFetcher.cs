@@ -1,3 +1,4 @@
+using static EchoAngmara.Texts;
 using System.IO;
 using System.Net.Http;
 using System.Net.Security;
@@ -42,14 +43,14 @@ public static class RealmlistFetcher
             string xml = await http.GetStringAsync(Url, ct);
             var rl = (Realmlist?)new XmlSerializer(typeof(Realmlist)).Deserialize(new StringReader(xml));
             return rl?.AuthServer == null
-                ? new Result(null, "Список серверов пришёл пустым", relaxed)
+                ? new Result(null, T("error.realmlist_empty"), relaxed)
                 : new Result(rl, null, relaxed);
         }
         catch (Exception ex)
         {
             return new Result(null, ex is HttpRequestException or TaskCanceledException
-                ? "Не удалось скачать список серверов с echoesofangmar.com. Проверьте интернет (возможно, нужен VPN)."
-                : "Ошибка списка серверов: " + ex.Message, relaxed);
+                ? T("error.realmlist_download")
+                : T("error.realmlist_other", ("сообщение", ex.Message)), relaxed);
         }
     }
 }

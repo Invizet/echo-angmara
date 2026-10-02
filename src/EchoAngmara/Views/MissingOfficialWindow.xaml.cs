@@ -1,3 +1,4 @@
+using static EchoAngmara.Texts;
 using System.Diagnostics;
 using System.Windows;
 using EchoAngmara.Core;
@@ -15,7 +16,7 @@ public partial class MissingOfficialWindow : Window
     {
         if (OfficialLauncher.Find() == null)
         {
-            MessageBox.Show(this, "Официальный лаунчер всё ещё не найден.", Title, MessageBoxButton.OK, MessageBoxImage.Information);
+            MessageBox.Show(this, T("missing.still_not_found"), Title, MessageBoxButton.OK, MessageBoxImage.Information);
             return;
         }
         // ядро нужно подгрузить до первого обращения к его типам — проще всего начать с чистого процесса

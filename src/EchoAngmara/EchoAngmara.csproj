@@ -28,5 +28,7 @@
   <ItemGroup>
     <!-- арт и логотип: Assets\background.jpg, Assets\logo.png — подхватываются, если есть -->
     <None Include="Assets\**" CopyToOutputDirectory="PreserveNewest" />
+    <!-- тексты интерфейса: правятся в корне репозитория -->
+    <EmbeddedResource Include="..\..\texts_ru.txt" LogicalName="texts_ru.txt" />
   </ItemGroup>
 </Project>

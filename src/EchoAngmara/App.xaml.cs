@@ -14,8 +14,8 @@ public partial class App : Application
         DispatcherUnhandledException += (_, ex) =>
         {
             Log.Write("UNHANDLED " + ex.Exception);
-            MessageBox.Show("Непредвиденная ошибка:\n" + ex.Exception.Message + "\n\nПодробности: " + Log.FilePath,
-                "Эхо Ангмара", MessageBoxButton.OK, MessageBoxImage.Error);
+            MessageBox.Show(Texts.T("dialog.unexpected_error", ("текст_ошибки", ex.Exception.Message), ("путь_к_логу", Log.FilePath)),
+                Texts.T("dialog.title"), MessageBoxButton.OK, MessageBoxImage.Error);
             ex.Handled = true;
         };
 

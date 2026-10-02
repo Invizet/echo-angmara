@@ -1,3 +1,4 @@
+using static EchoAngmara.Texts;
 using System.IO;
 using System.Net;
 using System.Net.Http;
@@ -66,7 +67,7 @@ public static class NewsService
         var head = new Paragraph { Margin = new Thickness(0, 0, 0, 4), FontSize = 11, Foreground = muted };
         head.Inlines.Add(new Run(item.Date?.ToLocalTime().ToString("d MMMM yyyy, HH:mm", new System.Globalization.CultureInfo("ru-RU")) ?? ""));
         head.Inlines.Add(new Run("  ·  "));
-        var open = new Hyperlink(new Run("открыть в Telegram")) { NavigateUri = new Uri(item.Url), Foreground = muted };
+        var open = new Hyperlink(new Run(T("main.news_open_post"))) { NavigateUri = new Uri(item.Url), Foreground = muted };
         open.Click += (_, _) => Shell.Open(item.Url);
         head.Inlines.Add(open);
         sec.Blocks.Add(head);

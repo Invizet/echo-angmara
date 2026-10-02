@@ -1,3 +1,4 @@
+using static EchoAngmara.Texts;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -17,7 +18,7 @@ public sealed class ComponentsWindow : Window
     public ComponentsWindow(Manifest manifest, IReadOnlyCollection<string> selected)
     {
         _manifest = manifest;
-        Title = "Состав перевода";
+        Title = T("components.window_title");
         Width = 480;
         SizeToContent = SizeToContent.Height;
         ResizeMode = ResizeMode.NoResize;
@@ -27,13 +28,13 @@ public sealed class ComponentsWindow : Window
         var root = new StackPanel { Margin = new Thickness(24, 20, 24, 20) };
         root.Children.Add(new TextBlock
         {
-            Text = $"Перевод v{manifest.Version}", FontSize = 20,
+            Text = T("components.header", ("версия", manifest.Version)), FontSize = 20,
             FontFamily = (FontFamily)Application.Current.FindResource("Display"),
             Foreground = (Brush)Application.Current.FindResource("Gold"),
         });
         root.Children.Add(new TextBlock
         {
-            Text = "Отметьте, что ставить в игру. Снятые части не удаляются, а убираются на склад — вернуть можно в любой момент.",
+            Text = T("components.hint"),
             TextWrapping = TextWrapping.Wrap, Margin = new Thickness(0, 6, 0, 14), FontSize = 12,
             Foreground = (Brush)Application.Current.FindResource("Muted"),
         });
@@ -42,11 +43,11 @@ public sealed class ComponentsWindow : Window
         {
             var box = new CheckBox { IsChecked = selected.Contains(c.Id), Margin = new Thickness(0, 6, 0, 0), Foreground = (Brush)Application.Current.FindResource("Text") };
             var text = new StackPanel();
-            text.Children.Add(new TextBlock { Text = $"{c.Title}  ·  {Size(c.Size)}", FontSize = 13 });
-            if (!string.IsNullOrEmpty(c.Description))
-                text.Children.Add(new TextBlock { Text = c.Description, FontSize = 11, TextWrapping = TextWrapping.Wrap, MaxWidth = 380, Foreground = (Brush)Application.Current.FindResource("Muted") });
+            text.Children.Add(new TextBlock { Text = $"{PartTitle(c)}  ·  {Size(c.Size)}", FontSize = 13 });
+            if (!string.IsNullOrEmpty(PartDescription(c)))
+                text.Children.Add(new TextBlock { Text = PartDescription(c), FontSize = 11, TextWrapping = TextWrapping.Wrap, MaxWidth = 380, Foreground = (Brush)Application.Current.FindResource("Muted") });
             box.Content = text;
-            System.Windows.Automation.AutomationProperties.SetName(box, c.Title);
+            System.Windows.Automation.AutomationProperties.SetName(box, PartTitle(c));
             box.Checked += (_, _) => Validate();
             box.Unchecked += (_, _) => Validate();
             _boxes[c.Id] = box;
@@ -57,9 +58,9 @@ public sealed class ComponentsWindow : Window
         root.Children.Add(_warn);
 
         var buttons = new StackPanel { Orientation = Orientation.Horizontal, HorizontalAlignment = HorizontalAlignment.Right, Margin = new Thickness(0, 16, 0, 0) };
-        var ok = new Button { Content = "Применить", Style = (Style)Application.Current.FindResource("Ghost"), Margin = new Thickness(0, 0, 8, 0), IsDefault = true };
+        var ok = new Button { Content = T("components.apply"), Style = (Style)Application.Current.FindResource("Ghost"), Margin = new Thickness(0, 0, 8, 0), IsDefault = true };
         ok.Click += (_, _) => DialogResult = true;
-        var cancel = new Button { Content = "Отмена", Style = (Style)Application.Current.FindResource("Ghost"), IsCancel = true };
+        var cancel = new Button { Content = T("components.cancel"), Style = (Style)Application.Current.FindResource("Ghost"), IsCancel = true };
         buttons.Children.Add(ok);
         buttons.Children.Add(cancel);
         root.Children.Add(buttons);
@@ -74,9 +75,14 @@ public sealed class ComponentsWindow : Window
             .Where(c => sel.Contains(c.Id))
             .SelectMany(c => c.Requires.Where(r => !sel.Contains(r)).Select(r => (c, req: _manifest.Get(r))))
             .Where(x => x.req != null)
-            .Select(x => $"«{x.c.Title}» работает только вместе с «{x.req!.Title}» — без них игра их не увидит.");
+            .Select(x => T("components.requires_warning", ("часть", PartTitle(x.c)), ("нужная_часть", PartTitle(x.req!))));
         _warn.Text = string.Join("\n", problems);
     }
 
-    static string Size(long b) => b >= 1L << 20 ? $"{b / (double)(1L << 20):0} МБ" : $"{b / 1024.0:0} КБ";
+    static string PartTitle(Component c) => Has($"part.{c.Id}.title") ? T($"part.{c.Id}.title") : c.Title;
+    static string? PartDescription(Component c) => Has($"part.{c.Id}.description") ? T($"part.{c.Id}.description") : c.Description;
+
+    static string Size(long b) => b >= 1L << 20
+        ? T("size.mb", ("число", (b / (double)(1L << 20)).ToString("0")))
+        : T("size.kb", ("число", (b / 1024.0).ToString("0")));
 }

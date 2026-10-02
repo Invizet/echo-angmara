@@ -1,3 +1,4 @@
+using static EchoAngmara.Texts;
 using System.IO;
 using System.Reflection;
 using EchoesLauncher.Common;
@@ -61,19 +62,19 @@ public sealed class GameSession
     /// <summary>Сообщения ядра на русский; незнакомые показываем как есть.</summary>
     static string Translate(string msg) => msg switch
     {
-        "Authentication failed" => "Неверный логин или пароль. Проверьте их в официальном лаунчере.",
-        "This account has been banned" or "This account has been banned." => "Аккаунт заблокирован.",
-        "Authentication service error." => "Ошибка сервера авторизации.",
-        "Error connecting to game server." => "Не удалось подключиться к игровому серверу.",
+        "Authentication failed" => T("error.bad_password"),
+        "This account has been banned" or "This account has been banned." => T("error.banned"),
+        "Authentication service error." => T("error.auth_service"),
+        "Error connecting to game server." => T("error.game_server_connect"),
         "Launcher out of date. Restart the launcher (from Start menu) to update it" =>
-            "Официальный лаунчер устарел. Запустите его из меню «Пуск», чтобы он обновился.",
-        "Couldn't connect to the authentication service!" => "Не удалось подключиться к серверу авторизации.",
-        "Access to game server denied." => "Игровой сервер отказал во входе.",
+            T("error.launcher_outdated"),
+        "Couldn't connect to the authentication service!" => T("error.auth_connect"),
+        "Access to game server denied." => T("error.game_server_denied"),
         "Couldn't download the patch manifest! The patch server might be down." =>
-            "Не удалось получить список файлов игры — сервер обновлений недоступен.",
-        _ when msg.StartsWith("Couldn't verify client DAT file") => "Файл клиента повреждён: " + msg + " Возможно, клиент придётся переустановить.",
-        _ when msg.StartsWith("Couldn't patch") => "Не удалось обновить файл игры: " + msg,
-        _ when msg.StartsWith("Couldn't remove old patch file") => "Не удалось удалить старый патч: " + msg,
+            T("error.patch_manifest"),
+        _ when msg.StartsWith("Couldn't verify client DAT file") => T("error.dat_corrupted", ("сообщение", msg)),
+        _ when msg.StartsWith("Couldn't patch") => T("error.patch_file", ("сообщение", msg)),
+        _ when msg.StartsWith("Couldn't remove old patch file") => T("error.patch_remove", ("сообщение", msg)),
         _ => msg,
     };
 }
