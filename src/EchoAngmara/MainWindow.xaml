@@ -151,8 +151,10 @@
                 <Button Style="{StaticResource LinkButton}" Content="Сайт Echoes" Click="Link_Click" Tag="EchoesSite"/>
                 <Button Style="{StaticResource LinkButton}" Content="Официальный лаунчер" Click="OpenOfficial_Click"/>
             </StackPanel>
-            <TextBlock x:Name="VersionText" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,24,10"
-                       FontSize="11" Foreground="{StaticResource Muted}"/>
+            <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,24,10">
+                <Button x:Name="SelfUpdateButton" Style="{StaticResource LinkButton}" Foreground="{StaticResource GoldBright}" Visibility="Collapsed" Click="SelfUpdate_Click"/>
+                <TextBlock x:Name="VersionText" FontSize="11" Foreground="{StaticResource Muted}" VerticalAlignment="Center"/>
+            </StackPanel>
         </Grid>
     </Grid>
 </Window>

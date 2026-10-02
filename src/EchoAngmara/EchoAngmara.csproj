@@ -12,6 +12,8 @@
     <Product>Эхо Ангмара</Product>
     <Version>0.1.0</Version>
     <SatelliteResourceLanguages>ru</SatelliteResourceLanguages>
+    <!-- свой Main: Velopack должен отработать раньше WPF -->
+    <StartupObject>EchoAngmara.Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\EchoesLauncher.Common.Stub\EchoesLauncher.Common.Stub.csproj">
@@ -19,5 +21,10 @@
       <ExcludeAssets>runtime</ExcludeAssets>
     </ProjectReference>
     <PackageReference Include="System.Security.Cryptography.ProtectedData" Version="8.0.0" />
+    <PackageReference Include="Velopack" Version="1.2.161" />
+  </ItemGroup>
+  <ItemGroup>
+    <!-- арт и логотип: Assets\background.jpg, Assets\logo.png — подхватываются, если есть -->
+    <None Include="Assets\**" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 </Project>

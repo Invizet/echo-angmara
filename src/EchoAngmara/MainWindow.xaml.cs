@@ -27,6 +27,7 @@ public partial class MainWindow : Window
     bool _busy;
     bool _suppressLang;
     readonly DispatcherTimer _realmTimer = new() { Interval = TimeSpan.FromSeconds(60) };
+    readonly SelfUpdater _updater = new();
 
     static string ManifestCache => Path.Combine(L10nState.Dir, "manifest-ru.json");
 
@@ -50,7 +51,25 @@ public partial class MainWindow : Window
         (_l10n.State.Language == GameLanguage.Russian ? LangRu : LangEn).IsChecked = true;
         _suppressLang = false;
 
-        await Task.WhenAll(LoadNewsAsync(), ConnectAsync(), LoadManifestAsync());
+        await Task.WhenAll(LoadNewsAsync(), ConnectAsync(), LoadManifestAsync(), CheckSelfUpdateAsync());
+    }
+
+    async Task CheckSelfUpdateAsync()
+    {
+        try
+        {
+            if (!await _updater.CheckAndDownloadAsync()) return;
+            SelfUpdateButton.Content = $"Лаунчер обновлён до v{_updater.ReadyVersion} — перезапустить";
+            SelfUpdateButton.ToolTip = "Обновление уже скачано и установится само при закрытии. Можно перезапустить сейчас.";
+            SelfUpdateButton.Visibility = Visibility.Visible;
+        }
+        catch (Exception ex) { Log.Write("Самообновление: " + ex.Message); }
+    }
+
+    void SelfUpdate_Click(object sender, RoutedEventArgs e)
+    {
+        if (_busy || LocalizationManager.GameRunning()) { Status("Дождитесь окончания загрузки или закройте игру.", bad: true); return; }
+        _updater.ApplyAndRestart();
     }
 
     void LoadArt()

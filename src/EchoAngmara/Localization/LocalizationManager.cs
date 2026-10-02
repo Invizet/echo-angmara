@@ -91,23 +91,38 @@ public sealed class LocalizationManager
     public async Task InstallAsync(HttpClient http, Manifest m, IReadOnlyCollection<string> componentIds,
         IProgress<DownloadProgress> progress, CancellationToken ct)
     {
-        var todo = Check(m, componentIds).Where(s => !s.Ok).Select(s => s.File).ToList();
-        long total = todo.Sum(f => f.Size), done = 0;
+        var check = Check(m, componentIds);
+        var todo = check.Where(s => !s.Ok).Select(s => s.File).ToList();
+        // Одинаковые файлы (русский стартовый ролик лежит и в raw/ru, и в raw/en) качаем один раз, остальные копируем
+        var groups = todo.GroupBy(f => f.Sha256, StringComparer.OrdinalIgnoreCase).ToList();
+        long total = groups.Sum(g => g.First().Size), done = 0;
         Directory.CreateDirectory(StoreDir);
         progress.Report(new DownloadProgress(0, total, ""));
 
         using var gate = new SemaphoreSlim(3);
-        var tasks = todo.Select(async f =>
+        var tasks = groups.Select(async g =>
         {
             await gate.WaitAsync(ct);
             try
             {
-                string dest = f.Switchable ? Path.Combine(StoreDir, Path.GetFileName(f.Path)) : Path.Combine(GameDir, f.Path.Replace('/', '\\'));
-                await DownloadFileAsync(http, f, dest, n =>
+                var first = g.First();
+                string src = Destination(first);
+                // такой файл уже есть на диске под другим именем — копируем, не качаем
+                string? local = m.AllFiles.Where(x => x.Sha256.Equals(first.Sha256, StringComparison.OrdinalIgnoreCase))
+                    .SelectMany(Candidates).FirstOrDefault(p => HashMatches(p, first));
+                if (local != null)
                 {
-                    long d = Interlocked.Add(ref done, n);
-                    progress.Report(new DownloadProgress(d, total, Path.GetFileName(f.Path)));
-                }, ct);
+                    CopyKnown(local, src, first);
+                    Interlocked.Add(ref done, first.Size);
+                }
+                else
+                    await DownloadFileAsync(http, first, src, n =>
+                    {
+                        long d = Interlocked.Add(ref done, n);
+                        progress.Report(new DownloadProgress(d, total, Path.GetFileName(first.Path)));
+                    }, ct);
+                foreach (var twin in g.Skip(1))
+                    CopyKnown(src, Destination(twin), twin);
             }
             finally { gate.Release(); }
         }).ToList();
@@ -116,6 +131,18 @@ public sealed class LocalizationManager
         State.InstalledVersion = m.Version;
         State.Selected = componentIds.ToHashSet();
         State.Save();
+    }
+
+    string Destination(ManifestFile f) => f.Switchable
+        ? Path.Combine(StoreDir, Path.GetFileName(f.Path))
+        : Path.Combine(GameDir, f.Path.Replace('/', '\\'));
+
+    void CopyKnown(string from, string to, ManifestFile f)
+    {
+        if (string.Equals(Path.GetFullPath(from), Path.GetFullPath(to), StringComparison.OrdinalIgnoreCase)) return;
+        Directory.CreateDirectory(Path.GetDirectoryName(to)!);
+        File.Copy(from, to, overwrite: true);
+        State.Remember(new FileInfo(to), f.Sha256);
     }
 
     async Task DownloadFileAsync(HttpClient http, ManifestFile f, string dest, Action<long> onBytes, CancellationToken ct)

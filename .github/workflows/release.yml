@@ -1,0 +1,47 @@
+# Выпуск лаунчера: git tag v0.2.0 && git push origin v0.2.0
+# Собирает, упаковывает Velopack (установщик + дельта-обновления) и публикует релиз.
+# Установщик всегда доступен по ссылке:
+#   https://github.com/Invizet/echo-angmara/releases/latest/download/EchoAngmaraLauncher-win-Setup.exe
+name: Выпуск лаунчера
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+
+      - name: Версия из тега
+        id: ver
+        shell: bash
+        run: echo "v=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
+
+      - name: Сборка
+        run: dotnet publish src/EchoAngmara -c Release -r win-x64 --self-contained false -p:Version=${{ steps.ver.outputs.v }} -o publish
+
+      - name: Velopack
+        run: dotnet tool install -g vpk --version 1.2.161
+
+      - name: Прошлый релиз (для дельта-обновлений)
+        continue-on-error: true
+        run: vpk download github --repoUrl https://github.com/${{ github.repository }} --token ${{ secrets.GITHUB_TOKEN }} -o Releases
+
+      - name: Упаковка
+        run: >
+          vpk pack -u EchoAngmaraLauncher -v ${{ steps.ver.outputs.v }} -p publish -e EchoAngmara.exe
+          --packTitle "Эхо Ангмара" --packAuthors Invizet --framework net8-x64-desktop -o Releases
+
+      - name: Публикация
+        run: >
+          vpk upload github --repoUrl https://github.com/${{ github.repository }} --token ${{ secrets.GITHUB_TOKEN }}
+          -o Releases --publish --tag v${{ steps.ver.outputs.v }} --releaseName "Эхо Ангмара v${{ steps.ver.outputs.v }}"
