@@ -21,7 +21,7 @@ public static class AppLinks
     public const string Wiki = "https://echoes.miraheze.org/wiki/Main_Page/ru";
     public const string Huuva = "https://lotro.huuva.org/";
     public const string OverlayMap = "https://storage.huuva.org/downloadFile?id=dPDvSDCupu";
-    public const string LoreDbLc = "https://sourceforge.net/projects/lotrocompanion/files/loredb/lotro-lore-database-SoABook11-1.0.0.zip/download";
+    public const string LoreDbLc = "https://sourceforge.net/projects/lotrocompanion/files/loredb/lotro-lore-database-SoABook11-5.1.0.zip/download";
     public const string EchoesSite = "https://www.echoesofangmar.com/";
     public static string GitHub => $"https://github.com/{Owner}/{Repo}";
 }
