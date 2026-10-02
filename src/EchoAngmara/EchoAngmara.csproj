@@ -10,7 +10,7 @@
     <AssemblyName>EchoAngmara</AssemblyName>
     <RootNamespace>EchoAngmara</RootNamespace>
     <Product>Эхо Ангмара</Product>
-    <Version>0.1.0</Version>
+    <Version>0.2.0</Version>
     <SatelliteResourceLanguages>ru</SatelliteResourceLanguages>
     <!-- свой Main: Velopack должен отработать раньше WPF -->
     <StartupObject>EchoAngmara.Program</StartupObject>
