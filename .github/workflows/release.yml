@@ -1,5 +1,5 @@
 # Выпуск лаунчера: git tag v0.2.0 && git push origin v0.2.0
-# Собирает, упаковывает Velopack (установщик + дельта-обновления) и публикует релиз.
+# Собирает, упаковывает Velopack (установщик + полные обновления; дельты выключены — zstd не понимает кириллицу в имени заглушки) и публикует релиз.
 # Установщик всегда доступен по ссылке:
 #   https://github.com/Invizet/echo-angmara/releases/latest/download/EchoAngmaraLauncher-win-Setup.exe
 name: Выпуск лаунчера
@@ -40,7 +40,8 @@ jobs:
         run: >
           vpk pack -u EchoAngmaraLauncher -v ${{ steps.ver.outputs.v }} -p publish -e EchoAngmara.exe
           --packTitle "Эхо Ангмара" --packAuthors Invizet --framework net8-x64-desktop -o Releases
-          --icon src/EchoAngmara/Assets/icon.ico
+          --icon src/EchoAngmara/Assets/icon.ico --runtime win-x64
+          --delta none
 
       - name: Публикация
         run: >
