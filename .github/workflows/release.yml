@@ -40,6 +40,7 @@ jobs:
         run: >
           vpk pack -u EchoAngmaraLauncher -v ${{ steps.ver.outputs.v }} -p publish -e EchoAngmara.exe
           --packTitle "Эхо Ангмара" --packAuthors Invizet --framework net8-x64-desktop -o Releases
+          --icon src/EchoAngmara/Assets/icon.ico
 
       - name: Публикация
         run: >
