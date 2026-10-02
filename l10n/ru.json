@@ -1,0 +1,383 @@
+{
+ "lang": "ru",
+ "version": "2.4.0",
+ "released": "2026-10-02",
+ "notes": "Первый выпуск через лаунчер «Эхо Ангмара»",
+ "components": [
+  {
+   "id": "text",
+   "title": "Тексты и шрифты",
+   "description": "Весь текст игры на русском. Шрифты лежат в том же файле — отдельно не ставятся.",
+   "requires": [],
+   "default": true,
+   "files": [
+    {
+     "path": "echoespatch/local/25_42_text.patches",
+     "size": 16740388,
+     "sha256": "ed4e47e0903097061446252f8403b4db3c80c88f280d1f64f677a011afa959d5",
+     "urls": [
+      "https://github.com/Invizet/echo-angmara/releases/download/l10n-ru-2.4.0/25_42_text.patches"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "sounds",
+   "title": "Озвучка",
+   "description": "Русские голоса и звуки.",
+   "requires": [],
+   "default": true,
+   "files": [
+    {
+     "path": "echoespatch/local/0a_sounds.patches",
+     "size": 99015199,
+     "sha256": "c8ca61881d05d4cb70a2585c038b32f3bbdd478b0a97656a70939607b0b86d4f",
+     "urls": [
+      "https://github.com/Invizet/echo-angmara/releases/download/l10n-ru-2.4.0/0a_sounds.patches"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "images",
+   "title": "Картинки",
+   "description": "Переведённые надписи на картинках интерфейса и загрузочных экранах.",
+   "requires": [],
+   "default": true,
+   "files": [
+    {
+     "path": "echoespatch/local/41_imgs.patches",
+     "size": 43264454,
+     "sha256": "043de959fae10ba0f3f43c5296b0654829f64cc27f5432fc45a7d70c176e8bf3",
+     "urls": [
+      "https://github.com/Invizet/echo-angmara/releases/download/l10n-ru-2.4.0/41_imgs.patches"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "xlat",
+   "title": "Русский поиск на аукционе",
+   "description": "Словарь названий предметов: искать на аукционе можно по-русски.",
+   "requires": [],
+   "default": true,
+   "files": [
+    {
+     "path": "echoespatch/local/xlat.dat",
+     "size": 2051476,
+     "sha256": "febbd1a23fd2399cf9c3b2a2d3afdd98a1b676b23706f84a4ce790ed5c2b276c",
+     "urls": [
+      "https://github.com/Invizet/echo-angmara/releases/download/l10n-ru-2.4.0/xlat.dat"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "video",
+   "title": "Видеоролики",
+   "description": "Ролики с русской озвучкой. Пути к ним прописаны в текстах — без русских текстов игра их не покажет.",
+   "requires": [
+    "text"
+   ],
+   "default": true,
+   "files": [
+    {
+     "path": "raw/ru/chargen/class_videos/class_burglar_ru.bik",
+     "size": 14363784,
+     "sha256": "970bcc51d38cb27850e594e8c0f338c954e8432b99b9fdf426df1f9a3bdf75a7",
+     "urls": [
+      "https://github.com/Invizet/echo-angmara/releases/download/l10n-ru-2.4.0/class_burglar_ru.bik"
+     ]
+    },
+    {
+     "path": "raw/ru/chargen/class_videos/class_captain_ru.bik",
+     "size": 14009288,
+     "sha256": "d92630178ebc604de3a36841e6fce498aa405a528bc9240bf7c33539628b6496",
+     "urls": [
+      "https://github.com/Invizet/echo-angmara/releases/download/l10n-ru-2.4.0/class_captain_ru.bik"
+     ]
+    },
+    {
+     "path": "raw/ru/chargen/class_videos/class_champion_ru.bik",
+     "size": 14105128,
+     "sha256": "0ca90fd5185e06d9bbd1d2d99117fe75b8dd3de13deb0ef4233ab88b1b58431f",
+     "urls": [
+      "https://github.com/Invizet/echo-angmara/releases/download/l10n-ru-2.4.0/class_champion_ru.bik"
+     ]
+    },
+    {
+     "path": "raw/ru/chargen/class_videos/class_guardian_ru.bik",
+     "size": 15542652,
+     "sha256": "10b43bef7aa0c153894d9c53173b72df07433198116bce30a4dffc523503dd98",
+     "urls": [
+      "https://github.com/Invizet/echo-angmara/releases/download/l10n-ru-2.4.0/class_guardian_ru.bik"
+     ]
+    },
+    {
+     "path": "raw/ru/chargen/class_videos/class_hunter_ru.bik",
+     "size": 15562356,
+     "sha256": "dca908690fc90f8a29ebf0f28edc40fee415b7a506a6699d3d426df2604508b4",
+     "urls": [
+      "https://github.com/Invizet/echo-angmara/releases/download/l10n-ru-2.4.0/class_hunter_ru.bik"
+     ]
+    },
+    {
+     "path": "raw/ru/chargen/class_videos/class_lore_master_ru.bik",
+     "size": 14041824,
+     "sha256": "56d4336e4cd4138791720c3fa6c50a23ae62988c40217ae7054591fc47195246",
+     "urls": [
+      "https://github.com/Invizet/echo-angmara/releases/download/l10n-ru-2.4.0/class_lore_master_ru.bik"
+     ]
+    },
+    {
+     "path": "raw/ru/chargen/class_videos/class_minstrel_ru.bik",
+     "size": 12519440,
+     "sha256": "f0903474ed1f9f32921bdc13e657a59cc080e5e52305b49cbf554ddcc76c8bd7",
+     "urls": [
+      "https://github.com/Invizet/echo-angmara/releases/download/l10n-ru-2.4.0/class_minstrel_ru.bik"
+     ]
+    },
+    {
+     "path": "raw/ru/chargen/race_videos/race_dwarf_ru.bik",
+     "size": 19762264,
+     "sha256": "4470ceb9ea6200c14612aadbad06e46eabaa96e374be9937a03f940e3602d734",
+     "urls": [
+      "https://github.com/Invizet/echo-angmara/releases/download/l10n-ru-2.4.0/race_dwarf_ru.bik"
+     ]
+    },
+    {
+     "path": "raw/ru/chargen/race_videos/race_elf_ru.bik",
+     "size": 19114916,
+     "sha256": "223cd0b7500ab3dd937b74918db857f8301df0865e87821bd4c2334c3f916532",
+     "urls": [
+      "https://github.com/Invizet/echo-angmara/releases/download/l10n-ru-2.4.0/race_elf_ru.bik"
+     ]
+    },
+    {
+     "path": "raw/ru/chargen/race_videos/race_hobbits_ru.bik",
+     "size": 19959352,
+     "sha256": "a42b544b6b464b5bcaf5a49b0f60a920386c754483ff6f909b6767cb56a52aa7",
+     "urls": [
+      "https://github.com/Invizet/echo-angmara/releases/download/l10n-ru-2.4.0/race_hobbits_ru.bik"
+     ]
+    },
+    {
+     "path": "raw/ru/chargen/race_videos/race_man_ru.bik",
+     "size": 20597520,
+     "sha256": "e85f8aa6401c852f6957617b2b8ac6f729cc4a20fe7280006f45a023d0ecec29",
+     "urls": [
+      "https://github.com/Invizet/echo-angmara/releases/download/l10n-ru-2.4.0/race_man_ru.bik"
+     ]
+    },
+    {
+     "path": "raw/ru/introcinematic/lotro_intro_cinematic_ru.bik",
+     "size": 100231336,
+     "sha256": "fdcb85125718ad101cbf9ef721b7eecb993781ee420f47536094de64d782b963",
+     "urls": [
+      "https://github.com/Invizet/echo-angmara/releases/download/l10n-ru-2.4.0/lotro_intro_cinematic_ru.bik"
+     ]
+    },
+    {
+     "path": "raw/ru/logo/lotro_ad_pregame_ru.jpg",
+     "size": 402314,
+     "sha256": "d49a6137f747678acf3e3910becbe0e657334ea00edc70538493fb63ba004648",
+     "urls": [
+      "https://github.com/Invizet/echo-angmara/releases/download/l10n-ru-2.4.0/lotro_ad_pregame_ru.jpg"
+     ]
+    },
+    {
+     "path": "raw/ru/logo/turbine_logo_ru.bik",
+     "size": 4672380,
+     "sha256": "463a862d3182a986e6ad208aed04283b743b5483cbfb4a5e4d05111570949cc6",
+     "urls": [
+      "https://github.com/Invizet/echo-angmara/releases/download/l10n-ru-2.4.0/turbine_logo_ru.bik"
+     ]
+    },
+    {
+     "path": "raw/ru/vignette_videos/vignette_dwarf_starter_ru.bik",
+     "size": 23793656,
+     "sha256": "784b5a36a98eb55bb05995a8bdffeca85220e2dea6b6f0f2726a97f962f7df84",
+     "urls": [
+      "https://github.com/Invizet/echo-angmara/releases/download/l10n-ru-2.4.0/vignette_dwarf_starter_ru.bik"
+     ]
+    },
+    {
+     "path": "raw/ru/vignette_videos/vignette_dwelf_raid_ru.bik",
+     "size": 23008012,
+     "sha256": "e05d3406d941149c34cd16df3942c104ee7579ec11ad18a34a6250a18ff995c9",
+     "urls": [
+      "https://github.com/Invizet/echo-angmara/releases/download/l10n-ru-2.4.0/vignette_dwelf_raid_ru.bik"
+     ]
+    },
+    {
+     "path": "raw/ru/vignette_videos/vignette_elf_starter_ru.bik",
+     "size": 23032300,
+     "sha256": "084d9d04591b78a42287ad7435c581095a0bc387496a9e44dc89141d00511df7",
+     "urls": [
+      "https://github.com/Invizet/echo-angmara/releases/download/l10n-ru-2.4.0/vignette_elf_starter_ru.bik"
+     ]
+    },
+    {
+     "path": "raw/ru/vignette_videos/vignette_hobbit_raid_ru.bik",
+     "size": 23072072,
+     "sha256": "814d03ff2ec1334b861f1eb0bc768028788441f1c2ece56b25069bd5a919b3e9",
+     "urls": [
+      "https://github.com/Invizet/echo-angmara/releases/download/l10n-ru-2.4.0/vignette_hobbit_raid_ru.bik"
+     ]
+    },
+    {
+     "path": "raw/ru/vignette_videos/vignette_hobbit_starter_ru.bik",
+     "size": 23036024,
+     "sha256": "df20c6bd38ac95bf80cecc02527959a3419d65edb729f62dfba518201acffdc1",
+     "urls": [
+      "https://github.com/Invizet/echo-angmara/releases/download/l10n-ru-2.4.0/vignette_hobbit_starter_ru.bik"
+     ]
+    },
+    {
+     "path": "raw/ru/vignette_videos/vignette_man_raid_ru.bik",
+     "size": 23027564,
+     "sha256": "a04d324719f3c78c38b968be7f5b28a1b850d568e0a078e90222378360cfc875",
+     "urls": [
+      "https://github.com/Invizet/echo-angmara/releases/download/l10n-ru-2.4.0/vignette_man_raid_ru.bik"
+     ]
+    },
+    {
+     "path": "raw/ru/vignette_videos/vignette_man_starter_ru.bik",
+     "size": 23419252,
+     "sha256": "b0d998b53387df7fb65d7e584364d1901a792be7f8140ebd18a8be8db49b0502",
+     "urls": [
+      "https://github.com/Invizet/echo-angmara/releases/download/l10n-ru-2.4.0/vignette_man_starter_ru.bik"
+     ]
+    },
+    {
+     "path": "raw/ru/vignette_videos/vignettes_amarthiel_revealed_ru.bik",
+     "size": 22791428,
+     "sha256": "01be051ac32b359bcf925f07529881b611ecfcfc61f99e763e40ee0cac4e13fe",
+     "urls": [
+      "https://github.com/Invizet/echo-angmara/releases/download/l10n-ru-2.4.0/vignettes_amarthiel_revealed_ru.bik"
+     ]
+    },
+    {
+     "path": "raw/ru/vignette_videos/vignettes_barrow_downs_rescue_bombadil_ru.bik",
+     "size": 18740540,
+     "sha256": "7810dd0e316a02662e1ef52026b56f14b30268755b4bcd2531a6400ff308aa94",
+     "urls": [
+      "https://github.com/Invizet/echo-angmara/releases/download/l10n-ru-2.4.0/vignettes_barrow_downs_rescue_bombadil_ru.bik"
+     ]
+    },
+    {
+     "path": "raw/ru/vignette_videos/vignettes_book_10_ru.bik",
+     "size": 23736224,
+     "sha256": "74b2dfb48b3cb27dbc9f6a4ffd17132564f7f44d1c6256e7bcf474d0692c3fa3",
+     "urls": [
+      "https://github.com/Invizet/echo-angmara/releases/download/l10n-ru-2.4.0/vignettes_book_10_ru.bik"
+     ]
+    },
+    {
+     "path": "raw/ru/vignette_videos/vignettes_book_11_ru.bik",
+     "size": 20669592,
+     "sha256": "cab1f28ac9c0f1a226008c6ef96ceb1f52e997eb8830911d42c721c845c3f36b",
+     "urls": [
+      "https://github.com/Invizet/echo-angmara/releases/download/l10n-ru-2.4.0/vignettes_book_11_ru.bik"
+     ]
+    },
+    {
+     "path": "raw/ru/vignette_videos/vignettes_book_4_ru.bik",
+     "size": 31479832,
+     "sha256": "f045861033f3a1ff2ac1dbf50ab1cb2ce5182f73ed8a1153f95ba064edf7dc5a",
+     "urls": [
+      "https://github.com/Invizet/echo-angmara/releases/download/l10n-ru-2.4.0/vignettes_book_4_ru.bik"
+     ]
+    },
+    {
+     "path": "raw/ru/vignette_videos/vignettes_book_5_ru.bik",
+     "size": 27601028,
+     "sha256": "69ae311f7d6f7ba0ab9d1970ba9f85c04a69eb219585bc6fa0fa4c37285c08bd",
+     "urls": [
+      "https://github.com/Invizet/echo-angmara/releases/download/l10n-ru-2.4.0/vignettes_book_5_ru.bik"
+     ]
+    },
+    {
+     "path": "raw/ru/vignette_videos/vignettes_book_6_ru.bik",
+     "size": 24263860,
+     "sha256": "958a36398d6a97b283eb5d10b8dfd4777f09c55d99007e4ea9117a008819195d",
+     "urls": [
+      "https://github.com/Invizet/echo-angmara/releases/download/l10n-ru-2.4.0/vignettes_book_6_ru.bik"
+     ]
+    },
+    {
+     "path": "raw/ru/vignette_videos/vignettes_book_7_ru.bik",
+     "size": 20482128,
+     "sha256": "0a5406c04f3c3f52bcca0f1a1cc437bc99b630b2d61ec89be6f8fe21da1ac8aa",
+     "urls": [
+      "https://github.com/Invizet/echo-angmara/releases/download/l10n-ru-2.4.0/vignettes_book_7_ru.bik"
+     ]
+    },
+    {
+     "path": "raw/ru/vignette_videos/vignettes_book_8_ru.bik",
+     "size": 24357720,
+     "sha256": "44a0acd9755cde54305e3cb39628d1da8bb32d8aeef6ab289aa0e39a0a17cd9f",
+     "urls": [
+      "https://github.com/Invizet/echo-angmara/releases/download/l10n-ru-2.4.0/vignettes_book_8_ru.bik"
+     ]
+    },
+    {
+     "path": "raw/ru/vignette_videos/vignettes_council_of_elrond_ru.bik",
+     "size": 19086400,
+     "sha256": "4e7cc97a5681feaf5b0b83dc2f00c0b441d03e6fbc231b97e7b8b3be296d10a5",
+     "urls": [
+      "https://github.com/Invizet/echo-angmara/releases/download/l10n-ru-2.4.0/vignettes_council_of_elrond_ru.bik"
+     ]
+    },
+    {
+     "path": "raw/ru/vignette_videos/vignettes_gandalf_orthanc_ru.bik",
+     "size": 19070104,
+     "sha256": "a49c11be2d9817145c9d375f9aa41de7d2f6dd5da3683a8674bd4b6f71457ae5",
+     "urls": [
+      "https://github.com/Invizet/echo-angmara/releases/download/l10n-ru-2.4.0/vignettes_gandalf_orthanc_ru.bik"
+     ]
+    },
+    {
+     "path": "raw/ru/vignette_videos/vignettes_hobbits_flee_nazgul_buck_ferry_ru.bik",
+     "size": 19061836,
+     "sha256": "81753469b935686c4e7c78d6b91495fd6f7e3cb41a5c18c5eacf0ca6a704503a",
+     "urls": [
+      "https://github.com/Invizet/echo-angmara/releases/download/l10n-ru-2.4.0/vignettes_hobbits_flee_nazgul_buck_ferry_ru.bik"
+     ]
+    },
+    {
+     "path": "raw/ru/vignette_videos/vignettes_hobbits_leaving_shire_bag_end_ru.bik",
+     "size": 18436656,
+     "sha256": "c449cf757d65cd2a825fae0e4923f64f551ca5b0de051608378774adb2053d6c",
+     "urls": [
+      "https://github.com/Invizet/echo-angmara/releases/download/l10n-ru-2.4.0/vignettes_hobbits_leaving_shire_bag_end_ru.bik"
+     ]
+    },
+    {
+     "path": "raw/ru/vignette_videos/vignettes_nazgul_atk_bree_ru.bik",
+     "size": 17058616,
+     "sha256": "fc4d3c81c7e4203d85002f6a53f93879f43ad623407cb1a58d4647d877ca4f1f",
+     "urls": [
+      "https://github.com/Invizet/echo-angmara/releases/download/l10n-ru-2.4.0/vignettes_nazgul_atk_bree_ru.bik"
+     ]
+    },
+    {
+     "path": "raw/ru/vignette_videos/vignettes_strider_fight_nazgul_weathertop_ru.bik",
+     "size": 18458840,
+     "sha256": "a0ff3a6af7dd763f7709dc9b5a2b70365faa5ab6d4acc8b6879abd1892c55e78",
+     "urls": [
+      "https://github.com/Invizet/echo-angmara/releases/download/l10n-ru-2.4.0/vignettes_strider_fight_nazgul_weathertop_ru.bik"
+     ]
+    },
+    {
+     "path": "raw/en/introcinematic/lotro_intro_cinematic.bik",
+     "size": 100231336,
+     "sha256": "fdcb85125718ad101cbf9ef721b7eecb993781ee420f47536094de64d782b963",
+     "urls": [
+      "https://github.com/Invizet/echo-angmara/releases/download/l10n-ru-2.4.0/lotro_intro_cinematic.bik"
+     ]
+    }
+   ]
+  }
+ ]
+}
