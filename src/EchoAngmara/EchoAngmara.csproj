@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <!-- тот же рантайм, что у официального лаунчера; если он переедет на .NET 9+, поедем следом -->
+    <RollForward>LatestMajor</RollForward>
+    <AssemblyName>EchoAngmara</AssemblyName>
+    <RootNamespace>EchoAngmara</RootNamespace>
+    <Product>Эхо Ангмара</Product>
+    <Version>0.1.0</Version>
+    <SatelliteResourceLanguages>ru</SatelliteResourceLanguages>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\EchoesLauncher.Common.Stub\EchoesLauncher.Common.Stub.csproj">
+      <Private>false</Private>
+      <ExcludeAssets>runtime</ExcludeAssets>
+    </ProjectReference>
+    <PackageReference Include="System.Security.Cryptography.ProtectedData" Version="8.0.0" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Заглушка с публичным API официального EchoesLauncher.Common 1.0.0.0 — только для компиляции.
+       В сборку лаунчера НЕ попадает: в рантайме грузится настоящая DLL из папки официального лаунчера. -->
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <AssemblyName>EchoesLauncher.Common</AssemblyName>
+    <RootNamespace>EchoesLauncher.Common</RootNamespace>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <NoWarn>CS1998</NoWarn>
+  </PropertyGroup>
+</Project>

@@ -1,0 +1,158 @@
+<Window x:Class="EchoAngmara.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Эхо Ангмара" Width="1040" Height="620" MinWidth="900" MinHeight="560"
+        WindowStyle="None" ResizeMode="CanMinimize" AllowsTransparency="False"
+        WindowStartupLocation="CenterScreen" Background="{StaticResource Bg}"
+        Loaded="Window_Loaded">
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="34" ResizeBorderThickness="0" GlassFrameThickness="0" CornerRadius="0"/>
+    </WindowChrome.WindowChrome>
+
+    <Grid>
+        <!-- Фон: арт (Assets/background.jpg, если есть) + затемнение -->
+        <Image x:Name="BackgroundArt" Stretch="UniformToFill" Opacity="0.9"/>
+        <Rectangle>
+            <Rectangle.Fill>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                    <GradientStop Color="#F00E1116" Offset="0"/>
+                    <GradientStop Color="#990E1116" Offset="0.42"/>
+                    <GradientStop Color="#330E1116" Offset="0.75"/>
+                    <GradientStop Color="#550E1116" Offset="1"/>
+                </LinearGradientBrush>
+            </Rectangle.Fill>
+        </Rectangle>
+        <Rectangle VerticalAlignment="Bottom" Height="300">
+            <Rectangle.Fill>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                    <GradientStop Color="#000E1116" Offset="0"/>
+                    <GradientStop Color="#EE0E1116" Offset="1"/>
+                </LinearGradientBrush>
+            </Rectangle.Fill>
+        </Rectangle>
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="34"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="36"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="350"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Заголовок окна -->
+            <TextBlock Grid.ColumnSpan="2" Text="ЭХО АНГМАРА · русский лаунчер Echoes of Angmar" Margin="16,0,0,0" VerticalAlignment="Center"
+                       FontSize="11" Foreground="{StaticResource Muted}"/>
+            <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right" WindowChrome.IsHitTestVisibleInChrome="True">
+                <Button Style="{StaticResource TitleBarButton}" Content="&#xE921;" Click="Minimize_Click" ToolTip="Свернуть"/>
+                <Button Style="{StaticResource TitleBarButton}" Content="&#xE8BB;" Click="Close_Click" ToolTip="Закрыть"/>
+            </StackPanel>
+
+            <!-- Новости -->
+            <Border Grid.Row="1" Margin="16,4,8,8" Background="{StaticResource Panel}" BorderBrush="{StaticResource Line}" BorderThickness="1" CornerRadius="4">
+                <DockPanel>
+                    <DockPanel DockPanel.Dock="Top" Margin="16,12,12,6">
+                        <Button DockPanel.Dock="Right" Style="{StaticResource LinkButton}" Margin="0" Content="Канал в Telegram ↗" Click="Telegram_Click"/>
+                        <TextBlock Text="Новости" FontFamily="{StaticResource Serif}" FontSize="18" Foreground="{StaticResource Gold}"/>
+                    </DockPanel>
+                    <Grid>
+                        <FlowDocumentScrollViewer x:Name="NewsViewer" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"
+                                                  IsToolBarVisible="False" Focusable="False" Padding="0"/>
+                        <TextBlock x:Name="NewsPlaceholder" Text="Загружаем новости…" Margin="16" Foreground="{StaticResource Muted}" TextWrapping="Wrap"/>
+                    </Grid>
+                </DockPanel>
+            </Border>
+
+            <!-- Правая часть -->
+            <Grid Grid.Row="1" Grid.Column="1" Margin="24,0,24,8">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- Логотип (временный, текстом) -->
+                <StackPanel Margin="0,22,0,0">
+                    <Image x:Name="LogoImage" MaxHeight="120" HorizontalAlignment="Left" Visibility="Collapsed"/>
+                    <StackPanel x:Name="LogoText">
+                        <TextBlock Text="ЭХО АНГМАРА" FontFamily="{StaticResource Serif}" FontSize="54" Foreground="{StaticResource GoldBright}">
+                            <TextBlock.Effect><DropShadowEffect Color="Black" BlurRadius="18" ShadowDepth="0" Opacity="0.9"/></TextBlock.Effect>
+                        </TextBlock>
+                        <TextBlock Text="Властелин Колец Онлайн · классика" Margin="4,0,0,0" FontFamily="{StaticResource Serif}" FontSize="16" Foreground="{StaticResource Text}" Opacity="0.85"/>
+                    </StackPanel>
+                </StackPanel>
+
+                <!-- Панель запуска -->
+                <Border Grid.Row="2" Background="{StaticResource Panel}" BorderBrush="{StaticResource Line}" BorderThickness="1" CornerRadius="4" Padding="20,16">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="210"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- Аккаунт и мир -->
+                        <DockPanel>
+                            <TextBlock Text="Аккаунт" Foreground="{StaticResource Muted}" FontSize="12" VerticalAlignment="Center" Width="64"/>
+                            <Button x:Name="AccountButton" Style="{StaticResource Ghost}" MinWidth="150" HorizontalContentAlignment="Left" Click="AccountButton_Click">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock x:Name="AccountText" Text="—" Foreground="{StaticResource Text}" FontSize="13"/>
+                                    <TextBlock Text=" ▾" Foreground="{StaticResource Gold}" FontSize="11" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+                            <Ellipse x:Name="RealmDot" Width="8" Height="8" Fill="{StaticResource Muted}" VerticalAlignment="Center" Margin="18,0,6,0"/>
+                            <TextBlock x:Name="RealmText" Text="—" VerticalAlignment="Center" FontSize="12" TextTrimming="CharacterEllipsis"/>
+                        </DockPanel>
+
+                        <!-- Язык -->
+                        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,10,0,0">
+                            <TextBlock Text="Язык" Foreground="{StaticResource Muted}" FontSize="12" VerticalAlignment="Center" Width="64"/>
+                            <Border BorderBrush="{StaticResource Line}" BorderThickness="1" CornerRadius="4" Padding="2">
+                                <StackPanel Orientation="Horizontal">
+                                    <RadioButton x:Name="LangRu" Style="{StaticResource Segment}" Content="Русский" GroupName="lang" Checked="Lang_Checked"/>
+                                    <RadioButton x:Name="LangEn" Style="{StaticResource Segment}" Content="English" GroupName="lang" Checked="Lang_Checked"/>
+                                </StackPanel>
+                            </Border>
+                            <Button x:Name="ComponentsButton" Style="{StaticResource Ghost}" Content="Состав перевода…" Click="Components_Click" Margin="10,0,0,0" ToolTip="Какие части перевода ставить"/>
+                        </StackPanel>
+
+                        <!-- Перевод -->
+                        <DockPanel Grid.Row="2" Margin="0,10,0,0">
+                            <TextBlock Text="Перевод" Foreground="{StaticResource Muted}" FontSize="12" VerticalAlignment="Center" Width="64"/>
+                            <Button x:Name="L10nButton" DockPanel.Dock="Right" Style="{StaticResource Ghost}" Content="Скачать" Visibility="Collapsed" Click="L10nButton_Click" Margin="8,0,0,0"/>
+                            <TextBlock x:Name="L10nText" Text="проверяем…" VerticalAlignment="Center" FontSize="12" Foreground="{StaticResource Muted}" TextWrapping="Wrap"/>
+                        </DockPanel>
+
+                        <!-- Прогресс и статус -->
+                        <StackPanel Grid.Row="3" Margin="0,12,0,0">
+                            <TextBlock x:Name="StatusText" Text="Готовимся…" FontSize="12" TextWrapping="Wrap" Foreground="{StaticResource Text}"/>
+                            <ProgressBar x:Name="Progress" Height="3" Margin="0,6,0,0" Background="#22FFFFFF" Foreground="{StaticResource Gold}" BorderThickness="0" Visibility="Hidden"/>
+                        </StackPanel>
+
+                        <Button x:Name="PlayButton" Grid.Column="1" Grid.RowSpan="4" Style="{StaticResource PlayButton}" Content="ИГРАТЬ"
+                                Margin="16,0,0,0" Height="64" VerticalAlignment="Center" IsEnabled="False" Click="Play_Click"/>
+                    </Grid>
+                </Border>
+            </Grid>
+
+            <!-- Полезные ссылки -->
+            <StackPanel Grid.Row="2" Grid.ColumnSpan="2" Orientation="Horizontal" Margin="18,0,0,10" VerticalAlignment="Center">
+                <Button Style="{StaticResource LinkButton}" Content="Вики (рус.)" Click="Link_Click" Tag="Wiki"/>
+                <Button Style="{StaticResource LinkButton}" Content="Карта и база Huuva" Click="Link_Click" Tag="Huuva"/>
+                <Button Style="{StaticResource LinkButton}" Content="Telegram" Click="Link_Click" Tag="Telegram"/>
+                <Button Style="{StaticResource LinkButton}" Content="ВКонтакте" Click="Link_Click" Tag="Vk"/>
+                <Button Style="{StaticResource LinkButton}" Content="Сайт Echoes" Click="Link_Click" Tag="EchoesSite"/>
+                <Button Style="{StaticResource LinkButton}" Content="Официальный лаунчер" Click="OpenOfficial_Click"/>
+            </StackPanel>
+            <TextBlock x:Name="VersionText" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,24,10"
+                       FontSize="11" Foreground="{StaticResource Muted}"/>
+        </Grid>
+    </Grid>
+</Window>
