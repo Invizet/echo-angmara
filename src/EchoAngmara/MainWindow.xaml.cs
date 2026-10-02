@@ -467,6 +467,8 @@ public partial class MainWindow : Window
         {
             "Wiki" => AppLinks.Wiki,
             "Huuva" => AppLinks.Huuva,
+            "OverlayMap" => AppLinks.OverlayMap,
+            "LoreDbLc" => AppLinks.LoreDbLc,
             "Telegram" => AppLinks.Telegram,
             "Vk" => AppLinks.Vk,
             _ => AppLinks.EchoesSite,

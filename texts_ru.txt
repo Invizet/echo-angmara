@@ -21,6 +21,8 @@ main.minimize_tip        = Свернуть
 main.close_tip           = Закрыть
 
 main.news_header         = НОВОСТИ
+main.news_vk_link        = ВКонтакте
+    (в шапке новостей, слева от ссылки на Telegram — копия канала для тех, у кого нет VPN)
 main.news_channel_link   = Канал в Telegram ↗
 main.news_loading        = Загружаем новости…
 main.news_unavailable    = Новости пока недоступны. Загляните в канал Telegram.
@@ -38,9 +40,9 @@ main.play                = ИГРАТЬ
 
     Ссылки внизу окна:
 main.link_wiki           = Вики по игре
-main.link_huuva          = База знаний и конструктор персонажа
-main.link_telegram       = Telegram
-main.link_vk             = ВКонтакте
+main.link_huuva          = База знаний Huuva и конструктор персонажа
+main.link_overlay_map    = Карта-оверлей с указателем заданий
+main.link_loredb_lc      = База знаний LC
 main.link_echoes_site    = Сайт Echoes of Angmar
 main.link_official       = Официальный лаунчер
 

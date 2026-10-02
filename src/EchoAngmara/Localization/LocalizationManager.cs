@@ -246,7 +246,9 @@ public sealed class L10nState
     public sealed record Stamp(long Size, long Mtime, string Sha256);
 
     public static string Dir => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "EchoAngmara");
-    static string FilePath => Path.Combine(Dir, "state.json");
+    // с подставной папкой игры (ECHO_GAME_DIR, разработка) — отдельный файл, чтобы тесты не трогали настройки игрока
+    static string FilePath => Path.Combine(Dir,
+        string.IsNullOrEmpty(Environment.GetEnvironmentVariable("ECHO_GAME_DIR")) ? "state.json" : "state.dev.json");
     static readonly JsonSerializerOptions Opts = new() { WriteIndented = true };
 
     public static L10nState Load()

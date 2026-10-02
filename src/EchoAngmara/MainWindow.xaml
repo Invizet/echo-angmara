@@ -47,6 +47,9 @@
             <TextBlock Grid.ColumnSpan="2" Text="{local:T main.window_title}" Margin="16,0,0,0" VerticalAlignment="Center"
                        FontSize="11" Foreground="{StaticResource Muted}"/>
             <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right" WindowChrome.IsHitTestVisibleInChrome="True">
+                <!-- версия и «лаунчер обновлён» — здесь, чтобы низ окна целиком был под ссылки -->
+                <Button x:Name="SelfUpdateButton" Style="{StaticResource LinkButton}" Foreground="{StaticResource GoldBright}" Visibility="Collapsed" Click="SelfUpdate_Click" VerticalAlignment="Center"/>
+                <TextBlock x:Name="VersionText" FontSize="11" Foreground="{StaticResource Muted}" VerticalAlignment="Center" Margin="0,0,12,0"/>
                 <Button Style="{StaticResource TitleBarButton}" Content="&#xE921;" Click="Minimize_Click" ToolTip="{local:T main.minimize_tip}"/>
                 <Button Style="{StaticResource TitleBarButton}" Content="&#xE8BB;" Click="Close_Click" ToolTip="{local:T main.close_tip}"/>
             </StackPanel>
@@ -56,6 +59,7 @@
                 <DockPanel>
                     <DockPanel DockPanel.Dock="Top" Margin="16,12,12,6">
                         <Button DockPanel.Dock="Right" Style="{StaticResource LinkButton}" Margin="0" Content="{local:T main.news_channel_link}" Click="Telegram_Click"/>
+                        <Button DockPanel.Dock="Right" Style="{StaticResource LinkButton}" Margin="0,0,14,0" Content="{local:T main.news_vk_link}" Click="Link_Click" Tag="Vk"/>
                         <TextBlock Text="{local:T main.news_header}" FontFamily="{DynamicResource Display}" FontWeight="Bold" FontSize="15" Foreground="{StaticResource Gold}" VerticalAlignment="Center"/>
                     </DockPanel>
                     <Grid>
@@ -147,16 +151,12 @@
 
             <!-- Полезные ссылки -->
             <StackPanel Grid.Row="2" Grid.ColumnSpan="2" Orientation="Horizontal" Margin="18,0,0,10" VerticalAlignment="Center">
-                <Button Style="{StaticResource LinkButton}" Content="{local:T main.link_telegram}" Click="Link_Click" Tag="Telegram"/>
-                <Button Style="{StaticResource LinkButton}" Content="{local:T main.link_vk}" Click="Link_Click" Tag="Vk"/>
                 <Button Style="{StaticResource LinkButton}" Content="{local:T main.link_wiki}" Click="Link_Click" Tag="Wiki"/>
                 <Button Style="{StaticResource LinkButton}" Content="{local:T main.link_huuva}" Click="Link_Click" Tag="Huuva"/>
+                <Button Style="{StaticResource LinkButton}" Content="{local:T main.link_overlay_map}" Click="Link_Click" Tag="OverlayMap"/>
+                <Button Style="{StaticResource LinkButton}" Content="{local:T main.link_loredb_lc}" Click="Link_Click" Tag="LoreDbLc"/>
                 <Button Style="{StaticResource LinkButton}" Content="{local:T main.link_echoes_site}" Click="Link_Click" Tag="EchoesSite"/>
                 <Button Style="{StaticResource LinkButton}" Content="{local:T main.link_official}" Click="OpenOfficial_Click"/>
-            </StackPanel>
-            <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,24,10">
-                <Button x:Name="SelfUpdateButton" Style="{StaticResource LinkButton}" Foreground="{StaticResource GoldBright}" Visibility="Collapsed" Click="SelfUpdate_Click"/>
-                <TextBlock x:Name="VersionText" FontSize="11" Foreground="{StaticResource Muted}" VerticalAlignment="Center"/>
             </StackPanel>
         </Grid>
     </Grid>
