@@ -43,7 +43,8 @@ public partial class MainWindow : Window
 
     async void Window_Loaded(object sender, RoutedEventArgs e)
     {
-        VersionText.Text = T("main.version", ("версия", typeof(App).Assembly.GetName().Version?.ToString(3)), ("версия_официального", App.Official.Version.ToString(3)));
+        TitleText.Text = T("main.window_title") + " · " +
+            T("main.version", ("версия", typeof(App).Assembly.GetName().Version?.ToString(3)), ("версия_официального", App.Official.Version.ToString(3)));
         LoadArt();
         if (!LoadAccounts()) return;
 

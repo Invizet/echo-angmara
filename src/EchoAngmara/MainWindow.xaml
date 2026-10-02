@@ -44,12 +44,8 @@
             </Grid.ColumnDefinitions>
 
             <!-- Заголовок окна -->
-            <!-- название и версия — одной строкой от левого угла -->
-            <StackPanel Grid.ColumnSpan="2" Orientation="Horizontal" Margin="16,0,0,0" VerticalAlignment="Center">
-                <TextBlock Text="{local:T main.window_title}" FontSize="11" Foreground="{StaticResource Muted}"/>
-                <TextBlock Text="  ·  " FontSize="11" Foreground="{StaticResource Muted}"/>
-                <TextBlock x:Name="VersionText" FontSize="11" Foreground="{StaticResource Muted}"/>
-            </StackPanel>
+            <!-- название и версия — одной строкой от левого угла (собирается в Window_Loaded) -->
+            <TextBlock x:Name="TitleText" Grid.ColumnSpan="2" Margin="16,0,0,0" VerticalAlignment="Center" FontSize="11" Foreground="{StaticResource Muted}"/>
             <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right" WindowChrome.IsHitTestVisibleInChrome="True">
                 <!-- «лаунчер обновлён» — справа, у кнопок окна -->
                 <Button x:Name="SelfUpdateButton" Style="{StaticResource LinkButton}" Foreground="{StaticResource GoldBright}" Visibility="Collapsed" Click="SelfUpdate_Click" VerticalAlignment="Center" Margin="0,0,12,0"/>
