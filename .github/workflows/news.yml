@@ -1,4 +1,5 @@
-# Раз в 30 минут забирает посты t.me/echoesofangmar и кладёт news.json + картинки в ветку `news`.
+# Раз в 30 минут забирает посты t.me/echoesofangmar и кладёт news.json + картинки в ветку `site` (папка news/),
+# которую раздаёт GitHub Pages.
 # Лаунчер читает оттуда; к Telegram напрямую он не обращается.
 name: Новости из Telegram
 
@@ -22,17 +23,17 @@ jobs:
         with:
           path: src
 
-      - name: Ветка news
+      - name: Ветка site
         run: |
-          git clone --depth 1 --branch news "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" out \
-            || { mkdir out && cd out && git init -b news && git remote add origin "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git"; }
+          git clone --depth 1 --branch site "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" out \
+            || { mkdir out && cd out && git init -b site && git remote add origin "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git"; }
 
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
 
       - name: Забрать посты
-        run: python src/tools/news/fetch_telegram.py --channel echoesofangmar --out out --limit 20
+        run: python src/tools/news/fetch_telegram.py --channel echoesofangmar --out out/news --limit 20
 
       - name: Опубликовать, если изменилось
         working-directory: out
@@ -42,4 +43,4 @@ jobs:
           git add -A
           if git diff --cached --quiet; then echo "Без изменений"; exit 0; fi
           git commit -m "Новости $(date -u +%Y-%m-%dT%H:%MZ)"
-          git push origin news
+          git push origin site
