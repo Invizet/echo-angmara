@@ -29,7 +29,7 @@ public sealed class Manifest
         WriteIndented = true,
     };
 
-    public static Manifest Parse(byte[] json) => JsonSerializer.Deserialize<Manifest>(json, Json) ?? throw new InvalidDataException(T("error.empty_manifest"));
+    public static Manifest Parse(byte[] json) => JsonSerializer.Deserialize<Manifest>(json, Json) ?? throw new UserFacingException(T("error.empty_manifest"));
     public string ToJson() => JsonSerializer.Serialize(this, Json);
 }
 

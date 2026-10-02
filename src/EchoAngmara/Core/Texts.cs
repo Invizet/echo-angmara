@@ -56,6 +56,24 @@ public static class Texts
     public static bool Has(string key) => Map.ContainsKey(key);
 }
 
+/// <summary>Ошибка, текст которой уже написан для игрока (из texts_ru.txt) — показываем как есть.</summary>
+public sealed class UserFacingException : Exception
+{
+    public UserFacingException(string message, Exception? inner = null) : base(message, inner) { }
+
+    /// <summary>Причина сбоя по-русски вместо системного текста .NET.</summary>
+    public static string Reason(Exception? ex) => ex switch
+    {
+        null => "",
+        UserFacingException u => u.Message,
+        System.Net.Http.HttpRequestException { StatusCode: { } code } => Texts.T("error.net_http", ("код", (int)code)),
+        System.Net.Http.HttpRequestException => Texts.T("error.net_offline"),
+        TaskCanceledException or TimeoutException => Texts.T("error.net_timeout"),
+        IOException => Texts.T("error.disk"),
+        _ => Texts.T("error.net_offline"),
+    };
+}
+
 /// <summary>Для XAML: Text="{local:T main.play}".</summary>
 [MarkupExtensionReturnType(typeof(string))]
 public sealed class TExtension : MarkupExtension

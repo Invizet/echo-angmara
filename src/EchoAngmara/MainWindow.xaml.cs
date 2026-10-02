@@ -292,8 +292,7 @@ public partial class MainWindow : Window
         }
         catch (Exception ex)
         {
-            Log.Write("Установка перевода: " + ex);
-            Status(T("status.l10n_failed", ("причина", ex.Message)), bad: true);
+            Status(T("status.l10n_failed", ("причина", Friendly("Установка перевода", ex))), bad: true);
             return false;
         }
         finally
@@ -323,7 +322,7 @@ public partial class MainWindow : Window
         }
         catch (Exception ex)
         {
-            Status(ex.Message, bad: true);
+            Status(Friendly("Смена языка", ex), bad: true);
             RevertLang();
         }
     }
@@ -340,11 +339,12 @@ public partial class MainWindow : Window
         if (_manifest == null || _l10n == null) { Status(T("status.components_later"), bad: true); return; }
         var dlg = new Views.ComponentsWindow(_manifest, _l10n.State.Selected) { Owner = this };
         if (dlg.ShowDialog() != true) return;
-        _l10n.State.Selected = dlg.Selected;
-        _l10n.State.Save();
+        // галочки и язык читаем здесь: в Task.Run к элементам окна обращаться нельзя
+        var selected = dlg.Selected.ToList();
         var lang = CurrentLang;
-        try { await Task.Run(() => _l10n.Apply(_manifest, lang, dlg.Selected.ToList())); }
-        catch (Exception ex) { Status(ex.Message, bad: true); }
+        // Apply сам запишет новый набор в настройки — только если файлы действительно переложены
+        try { await Task.Run(() => _l10n.Apply(_manifest, lang, selected)); }
+        catch (Exception ex) { Status(Friendly("Состав перевода", ex), bad: true); }
         await UpdateL10nStatusAsync();
     }
 
@@ -418,8 +418,7 @@ public partial class MainWindow : Window
         }
         catch (Exception ex)
         {
-            Log.Write("Запуск: " + ex);
-            Status(T("status.launch_error", ("причина", ex.Message)), bad: true);
+            Status(T("status.launch_error", ("причина", Friendly("Запуск", ex))), bad: true);
         }
         finally
         {
@@ -436,6 +435,16 @@ public partial class MainWindow : Window
         _busy = busy;
         LangRu.IsEnabled = LangEn.IsEnabled = ComponentsButton.IsEnabled = L10nButton.IsEnabled = AccountButton.IsEnabled = !busy;
         UpdatePlayButton();
+    }
+
+    /// <summary>
+    /// Текст ошибки для игрока: наши сообщения (UserFacingException) — как есть,
+    /// системные (.NET, сеть, диск) — общей строкой из texts_ru.txt; подробности всегда в журнал.
+    /// </summary>
+    static string Friendly(string where, Exception ex)
+    {
+        Log.Write($"{where}: {ex}");
+        return ex is UserFacingException ? ex.Message : T("error.unexpected", ("путь_к_логу", Log.FilePath));
     }
 
     void Status(string text, bool bad = false)

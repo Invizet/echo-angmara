@@ -47,12 +47,12 @@ public sealed class LocalizationManager
                 byte[]? sig = null;
                 try { sig = await http.GetByteArrayAsync(site + "l10n/ru.json.sig", ct); } catch (HttpRequestException) { }
                 if (!ManifestSignature.Verify(json, sig))
-                    throw new InvalidDataException(T("error.l10n_signature"));
+                    throw new UserFacingException(T("error.l10n_signature"));
                 return Manifest.Parse(json);
             }
             catch (Exception ex) when (ex is not OperationCanceledException) { last = ex; }
         }
-        throw new IOException(T("error.l10n_info", ("сообщение", last?.Message)), last);
+        throw new UserFacingException(T("error.l10n_info", ("сообщение", UserFacingException.Reason(last))), last);
     }
 
     // ---------- состояние ----------
@@ -181,7 +181,7 @@ public sealed class LocalizationManager
                 if (!sha.Equals(f.Sha256, StringComparison.OrdinalIgnoreCase))
                 {
                     File.Delete(part);
-                    throw new InvalidDataException(T("error.l10n_checksum", ("имя_файла", Path.GetFileName(f.Path))));
+                    throw new UserFacingException(T("error.l10n_checksum", ("имя_файла", Path.GetFileName(f.Path))));
                 }
                 File.Move(part, dest, overwrite: true);
                 State.Remember(new FileInfo(dest), sha);
@@ -193,7 +193,7 @@ public sealed class LocalizationManager
                 onBytes(-counted); // откатываем прогресс, следующее зеркало начнёт заново или докачает
             }
         }
-        throw new IOException(T("error.l10n_download", ("имя_файла", Path.GetFileName(f.Path)), ("сообщение", last?.Message)), last);
+        throw new UserFacingException(T("error.l10n_download", ("имя_файла", Path.GetFileName(f.Path)), ("сообщение", UserFacingException.Reason(last))), last);
     }
 
     static async Task<string> Sha256Async(string path, CancellationToken ct)
@@ -207,7 +207,7 @@ public sealed class LocalizationManager
     /// <summary>Раскладывает файлы local\ ↔ склад под язык и выбранные компоненты. Чужие файлы в local\ не трогает.</summary>
     public void Apply(Manifest m, GameLanguage lang, IReadOnlyCollection<string> componentIds)
     {
-        if (GameRunning()) throw new InvalidOperationException(T("error.close_game_first"));
+        if (GameRunning()) throw new UserFacingException(T("error.close_game_first"));
         Directory.CreateDirectory(LocalDir);
         Directory.CreateDirectory(StoreDir);
         var on = componentIds.ToHashSet();
