@@ -55,7 +55,7 @@
                 <DockPanel>
                     <DockPanel DockPanel.Dock="Top" Margin="16,12,12,6">
                         <Button DockPanel.Dock="Right" Style="{StaticResource LinkButton}" Margin="0" Content="Канал в Telegram ↗" Click="Telegram_Click"/>
-                        <TextBlock Text="Новости" FontFamily="{StaticResource Serif}" FontSize="18" Foreground="{StaticResource Gold}"/>
+                        <TextBlock Text="НОВОСТИ" FontFamily="{DynamicResource Display}" FontWeight="Bold" FontSize="15" Foreground="{StaticResource Gold}" VerticalAlignment="Center"/>
                     </DockPanel>
                     <Grid>
                         <FlowDocumentScrollViewer x:Name="NewsViewer" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"
@@ -77,10 +77,12 @@
                 <StackPanel Margin="0,22,0,0">
                     <Image x:Name="LogoImage" MaxHeight="120" HorizontalAlignment="Left" Visibility="Collapsed"/>
                     <StackPanel x:Name="LogoText">
-                        <TextBlock Text="ЭХО АНГМАРА" FontFamily="{StaticResource Serif}" FontSize="54" Foreground="{StaticResource GoldBright}">
+                        <TextBlock Text="ЭХО АНГМАРА" FontFamily="{DynamicResource Display}" FontWeight="Bold" FontSize="50" Foreground="{StaticResource GoldBright}">
                             <TextBlock.Effect><DropShadowEffect Color="Black" BlurRadius="18" ShadowDepth="0" Opacity="0.9"/></TextBlock.Effect>
                         </TextBlock>
-                        <TextBlock Text="Властелин Колец Онлайн · классика" Margin="4,0,0,0" FontFamily="{StaticResource Serif}" FontSize="16" Foreground="{StaticResource Text}" Opacity="0.85"/>
+                        <TextBlock Text="Властелин Колец Онлайн · классика" Margin="3,2,0,0" FontFamily="{DynamicResource Display}" FontSize="15" Foreground="{StaticResource Text}" Opacity="0.85">
+                            <TextBlock.Effect><DropShadowEffect Color="Black" BlurRadius="10" ShadowDepth="0" Opacity="0.9"/></TextBlock.Effect>
+                        </TextBlock>
                     </StackPanel>
                 </StackPanel>
 

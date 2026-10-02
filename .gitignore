@@ -4,3 +4,6 @@ obj/
 .vs/
 news-out/
 /publish/
+
+# шрифты — лицензия не на распространение, только локально
+src/EchoAngmara/Assets/Fonts/

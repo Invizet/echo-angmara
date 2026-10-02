@@ -19,6 +19,7 @@ public partial class App : Application
             ex.Handled = true;
         };
 
+        LoadDisplayFont();
         var official = OfficialLauncher.Find();
         if (official == null)
         {
@@ -31,6 +32,21 @@ public partial class App : Application
         official.HookAssemblyResolve();
         MainWindow = new MainWindow();
         MainWindow.Show();
+    }
+}
+
+public partial class App
+{
+    /// <summary>Trajan Pro 3 из Assets/Fonts, если он там есть (в репозиторий шрифт не кладём).</summary>
+    void LoadDisplayFont()
+    {
+        try
+        {
+            string dir = Path.Combine(AppContext.BaseDirectory, "Assets", "Fonts");
+            if (!Directory.Exists(dir) || !Directory.EnumerateFiles(dir).Any(f => f.EndsWith(".otf") || f.EndsWith(".ttf"))) return;
+            Resources["Display"] = new System.Windows.Media.FontFamily(new Uri(dir + Path.DirectorySeparatorChar), "./#Trajan Pro 3");
+        }
+        catch (Exception ex) { Log.Write("Шрифт: " + ex.Message); }
     }
 }
 

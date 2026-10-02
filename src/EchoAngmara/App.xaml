@@ -16,6 +16,8 @@
         <SolidColorBrush x:Key="Good" Color="#FF7FB069"/>
         <SolidColorBrush x:Key="Bad" Color="#FFD0644F"/>
         <FontFamily x:Key="Serif">Palatino Linotype, Georgia, Times New Roman</FontFamily>
+        <!-- Крупные надписи. Если рядом лежит Assets/Fonts (Trajan Pro 3), App подменяет на него при старте -->
+        <FontFamily x:Key="Display">Palatino Linotype, Georgia, Times New Roman</FontFamily>
 
         <Style TargetType="TextBlock">
             <Setter Property="Foreground" Value="{StaticResource Text}"/>
@@ -72,9 +74,9 @@
         <!-- Большая кнопка «Играть» -->
         <Style x:Key="PlayButton" TargetType="Button">
             <Setter Property="Foreground" Value="#FF1A1408"/>
-            <Setter Property="FontFamily" Value="{StaticResource Serif}"/>
-            <Setter Property="FontSize" Value="22"/>
-            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="FontFamily" Value="{DynamicResource Display}"/>
+            <Setter Property="FontSize" Value="24"/>
+            <Setter Property="FontWeight" Value="Bold"/>
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="Template">
                 <Setter.Value>

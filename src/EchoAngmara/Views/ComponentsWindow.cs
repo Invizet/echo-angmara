@@ -28,7 +28,7 @@ public sealed class ComponentsWindow : Window
         root.Children.Add(new TextBlock
         {
             Text = $"Перевод v{manifest.Version}", FontSize = 20,
-            FontFamily = (FontFamily)Application.Current.FindResource("Serif"),
+            FontFamily = (FontFamily)Application.Current.FindResource("Display"),
             Foreground = (Brush)Application.Current.FindResource("Gold"),
         });
         root.Children.Add(new TextBlock
