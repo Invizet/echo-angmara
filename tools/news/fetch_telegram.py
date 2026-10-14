@@ -12,6 +12,7 @@ import json
 import os
 import re
 import sys
+import time
 import urllib.parse
 import urllib.request
 from html.parser import HTMLParser
@@ -21,10 +22,17 @@ UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) EchoAngmaraNews/1.0"
 ALLOWED = {"b", "strong", "i", "em", "u", "s", "del", "a", "br", "blockquote", "code", "pre"}
 
 
-def fetch(url):
+def fetch(url, tries=4):
     req = urllib.request.Request(url, headers={"User-Agent": UA})
-    with urllib.request.urlopen(req, timeout=30) as r:
-        return r.read()
+    for n in range(tries):  # сеть раннера иногда моргает (Errno 101) — не терять из-за этого полчаса
+        try:
+            with urllib.request.urlopen(req, timeout=30) as r:
+                return r.read()
+        except OSError as e:
+            if n == tries - 1:
+                raise
+            print(f"  {url}: {e}, повтор через {10 * (n + 1)} с", file=sys.stderr)
+            time.sleep(10 * (n + 1))
 
 
 class PostsParser(HTMLParser):

@@ -1,4 +1,4 @@
-# Раз в 30 минут забирает посты t.me/echoesofangmar и кладёт news.json + картинки в ветку `site` (папка news/),
+# Раз в 30 минут (будильник — Cloudflare-воркер tools/news/cloudflare; свой cron GitHub прореживает до раза в несколько часов и остаётся запасным)
 # которую раздаёт GitHub Pages.
 # Лаунчер читает оттуда; к Telegram напрямую он не обращается.
 name: Новости из Telegram
