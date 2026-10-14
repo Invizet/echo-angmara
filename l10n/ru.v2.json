@@ -1,9 +1,9 @@
 {
  "format": 2,
  "lang": "ru",
- "version": "2.4.1",
+ "version": "2.4.0",
  "released": "2026-10-14",
- "notes": "Шрифты больше не зависят от «Изображений»; видеоролики работают и без русских текстов; стартовый ролик возвращается к английскому, когда русский не нужен.",
+ "notes": "Перевод 2.4.0. Файлы для лаунчера 0.3.0+: шрифты не зависят от «Изображений»; видеоролики работают и без русских текстов; стартовый ролик возвращается к английскому, когда русский не нужен.",
  "components": [
   {
    "id": "text",
@@ -17,7 +17,7 @@
      "size": 29218857,
      "sha256": "283cd3e37a41b61e5260002cd1e7aef92a867ad3083c0ebeae04df51afbe5ce1",
      "urls": [
-      "https://github.com/Invizet/echo-angmara/releases/download/l10n-ru-2.4.1/25_42_text.patches"
+      "https://github.com/Invizet/echo-angmara/releases/download/l10n-ru-2.4.0-r2/25_42_text.patches"
      ]
     },
     {
@@ -25,7 +25,7 @@
      "size": 16503,
      "sha256": "d506c932a26fbb58d0ef6f8820c02766ba09a45ff1fcea81eb74e26dfdc9402a",
      "urls": [
-      "https://github.com/Invizet/echo-angmara/releases/download/l10n-ru-2.4.1/25_videopaths_ru.patches"
+      "https://github.com/Invizet/echo-angmara/releases/download/l10n-ru-2.4.0-r2/25_videopaths_ru.patches"
      ],
      "when": {
       "video": true
@@ -36,7 +36,7 @@
      "size": 16113,
      "sha256": "2ef450acbb258b0d5d7b360aab9cffea0dabd6bfc469d1b86b1eb3d7039059f1",
      "urls": [
-      "https://github.com/Invizet/echo-angmara/releases/download/l10n-ru-2.4.1/25_videopaths_ru_envideo.patches"
+      "https://github.com/Invizet/echo-angmara/releases/download/l10n-ru-2.4.0-r2/25_videopaths_ru_envideo.patches"
      ],
      "when": {
       "video": false
@@ -73,7 +73,7 @@
      "size": 30769514,
      "sha256": "e8e0e8e9f2c759ac4d07b15b6fc0e1eabf304ad8e79876e567257766b5d000b1",
      "urls": [
-      "https://github.com/Invizet/echo-angmara/releases/download/l10n-ru-2.4.1/41_imgs.patches"
+      "https://github.com/Invizet/echo-angmara/releases/download/l10n-ru-2.4.0-r2/41_imgs.patches"
      ]
     }
    ]
@@ -403,7 +403,7 @@
      "size": 17072,
      "sha256": "ca5aa1f11ef8beebdaabec6e9664696202e5346800e7adc8bb3da0bc3b2dd905",
      "urls": [
-      "https://github.com/Invizet/echo-angmara/releases/download/l10n-ru-2.4.1/25_videopaths_en_ruvideo.patches"
+      "https://github.com/Invizet/echo-angmara/releases/download/l10n-ru-2.4.0-r2/25_videopaths_en_ruvideo.patches"
      ],
      "when": {
       "text": false
@@ -423,7 +423,7 @@
      "size": 100349528,
      "sha256": "21c8c07b38e9bd6708214eb8349e7799ac59f8f482a7a56d409347c018c1a503",
      "urls": [
-      "https://github.com/Invizet/echo-angmara/releases/download/l10n-ru-2.4.1/lotro_intro_cinematic_en.bik"
+      "https://github.com/Invizet/echo-angmara/releases/download/l10n-ru-2.4.0-r2/lotro_intro_cinematic_en.bik"
      ]
     }
    ],
