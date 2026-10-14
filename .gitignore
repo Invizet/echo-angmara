@@ -7,3 +7,4 @@ news-out/
 
 # шрифты — лицензия не на распространение, только локально
 src/EchoAngmara/Assets/Fonts/
+__pycache__/

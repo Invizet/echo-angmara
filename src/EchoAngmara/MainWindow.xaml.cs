@@ -30,7 +30,7 @@ public partial class MainWindow : Window
     readonly DispatcherTimer _realmTimer = new() { Interval = TimeSpan.FromSeconds(60) };
     readonly SelfUpdater _updater = new();
 
-    static string ManifestCache => Path.Combine(L10nState.Dir, "manifest-ru.json");
+    static string ManifestCache => Path.Combine(L10nState.Dir, "manifest-ru.v2.json");
 
     public MainWindow()
     {

@@ -39,7 +39,7 @@ public sealed class ComponentsWindow : Window
             Foreground = (Brush)Application.Current.FindResource("Muted"),
         });
 
-        foreach (var c in manifest.Components)
+        foreach (var c in manifest.Components.Where(c => !c.Hidden))
         {
             var box = new CheckBox { IsChecked = selected.Contains(c.Id), Margin = new Thickness(0, 6, 0, 0), Foreground = (Brush)Application.Current.FindResource("Text") };
             var text = new StackPanel();

@@ -17,15 +17,18 @@ public sealed record DownloadProgress(long Done, long Total, string CurrentFile)
 /// <summary>
 /// Русский перевод на диске.
 ///   echoespatch\local\                 — то, что читает игра (папку патчер ядра не трогает — удаляет только файлы в корне echoespatch\)
-///   echoespatch\echo_angmara\ru\       — склад: скачанные файлы local\, выключенные языком или галочкой
-///   raw\ru\...                         — видео, лежат всегда (без русских текстов игра их не видит)
-/// Переключение языка и галочки = перемещение файлов local\ ↔ склад (мгновенно, на одном диске).
+///   echoespatch\echo_angmara\ru\       — склад: скачанные файлы local\ и raw\en\, выключенные языком или галочкой
+///   raw\ru\...                         — видео, лежат всегда (без путей к ним в текстах игра их не видит)
+///   raw\en\introcinematic\...          — стартовый ролик: русский при русском языке с роликами, иначе английский оригинал
+/// Переключение языка и галочки = перемещение файлов место ↔ склад (мгновенно, на одном диске).
 /// </summary>
 public sealed class LocalizationManager
 {
     public string GameDir { get; }
     string LocalDir => Path.Combine(GameDir, "echoespatch", "local");
     string StoreDir => Path.Combine(GameDir, "echoespatch", "echo_angmara", "ru");
+    /// <summary>Наши файлы неизвестной версии (из прошлых выпусков), убранные с места.</summary>
+    string OldDir => Path.Combine(StoreDir, "old");
     public L10nState State { get; }
 
     public LocalizationManager(string gameDir)
@@ -36,6 +39,12 @@ public sealed class LocalizationManager
 
     // ---------- манифест ----------
 
+    /// <summary>
+    /// Формат 2 (варианты файлов, скрытые части) — отдельным файлом: лаунчеры до 0.3.0 читают ru.json и разложили бы
+    /// все варианты сразу. Кэш манифеста — тоже свой (MainWindow.ManifestCache).
+    /// </summary>
+    public const string ManifestPath = "l10n/ru.v2.json";
+
     public static async Task<Manifest> FetchManifestAsync(HttpClient http, CancellationToken ct)
     {
         Exception? last = null;
@@ -43,9 +52,9 @@ public sealed class LocalizationManager
         {
             try
             {
-                byte[] json = await http.GetByteArrayAsync(site + "l10n/ru.json", ct);
+                byte[] json = await http.GetByteArrayAsync(site + ManifestPath, ct);
                 byte[]? sig = null;
-                try { sig = await http.GetByteArrayAsync(site + "l10n/ru.json.sig", ct); } catch (HttpRequestException) { }
+                try { sig = await http.GetByteArrayAsync(site + ManifestPath + ".sig", ct); } catch (HttpRequestException) { }
                 if (!ManifestSignature.Verify(json, sig))
                     throw new UserFacingException(T("error.l10n_signature"));
                 return Manifest.Parse(json);
@@ -57,18 +66,25 @@ public sealed class LocalizationManager
 
     // ---------- состояние ----------
 
-    /// <summary>Где сейчас должен/может лежать файл: для local\ — в local\ или на складе.</summary>
-    string[] Candidates(ManifestFile f)
+    string Target(ManifestFile f) => Path.Combine(GameDir, f.Path.Replace('/', '\\'));
+    string Stored(ManifestFile f) => Path.Combine(StoreDir, f.StoreName);
+
+    /// <summary>Где сейчас должен/может лежать файл: переключаемый — на месте или на складе.</summary>
+    string[] Candidates(ManifestFile f) => f.Switchable ? new[] { Target(f), Stored(f) } : new[] { Target(f) };
+
+    /// <summary>Нужен ли файл на своём месте при таком языке и галочках.</summary>
+    static bool Wanted(Component c, ManifestFile f, bool russian, IReadOnlySet<string> on)
     {
-        string target = Path.Combine(GameDir, f.Path.Replace('/', '\\'));
-        return f.Switchable ? new[] { target, Path.Combine(StoreDir, Path.GetFileName(f.Path)) } : new[] { target };
+        if (!c.Hidden && (!russian || !on.Contains(c.Id))) return false;
+        return f.When == null || f.When.All(kv => (kv.Key == "ru" ? russian : on.Contains(kv.Key)) == kv.Value);
     }
 
+    /// <summary>Файлы выбранных частей (со всеми вариантами — галочки потом переключаются без скачивания) и служебных.</summary>
     public List<FileStatus> Check(Manifest m, IEnumerable<string> componentIds)
     {
         var ids = componentIds.ToHashSet();
         var res = new List<FileStatus>();
-        foreach (var c in m.Components.Where(c => ids.Contains(c.Id)))
+        foreach (var c in m.Components.Where(c => c.Hidden || ids.Contains(c.Id)))
             foreach (var f in c.Files)
                 res.Add(new FileStatus(f, c, Candidates(f).Any(p => HashMatches(p, f))));
         State.Save();
@@ -134,9 +150,7 @@ public sealed class LocalizationManager
         State.Save();
     }
 
-    string Destination(ManifestFile f) => f.Switchable
-        ? Path.Combine(StoreDir, Path.GetFileName(f.Path))
-        : Path.Combine(GameDir, f.Path.Replace('/', '\\'));
+    string Destination(ManifestFile f) => f.Switchable ? Stored(f) : Target(f);
 
     void CopyKnown(string from, string to, ManifestFile f)
     {
@@ -204,24 +218,44 @@ public sealed class LocalizationManager
 
     // ---------- переключение ----------
 
-    /// <summary>Раскладывает файлы local\ ↔ склад под язык и выбранные компоненты. Чужие файлы в local\ не трогает.</summary>
+    /// <summary>
+    /// Раскладывает файлы место ↔ склад под язык и выбранные компоненты: на каждый путь встаёт первый подходящий
+    /// вариант, остальные уходят на склад. Чужие файлы не трогает; файл с нашим именем, но неизвестной версии
+    /// (прошлый выпуск) убирает в склад\old — из local\ всегда, из raw\en\ только чтобы освободить место.
+    /// </summary>
     public void Apply(Manifest m, GameLanguage lang, IReadOnlyCollection<string> componentIds)
     {
         if (GameRunning()) throw new UserFacingException(T("error.close_game_first"));
         Directory.CreateDirectory(LocalDir);
         Directory.CreateDirectory(StoreDir);
         var on = componentIds.ToHashSet();
-        foreach (var c in m.Components)
-            foreach (var f in c.Files.Where(f => f.Switchable))
+        bool russian = lang == GameLanguage.Russian;
+        var byPath = m.Components.SelectMany(c => c.Files.Where(f => f.Switchable).Select(f => (c, f)))
+            .GroupBy(x => x.f.Path, StringComparer.OrdinalIgnoreCase);
+        foreach (var variants in byPath)
+        {
+            string target = Target(variants.First().f);
+            var want = variants.Where(x => Wanted(x.c, x.f, russian, on)).Select(x => x.f).FirstOrDefault();
+            if (want != null && HashMatches(target, want)) continue;
+            // нужного варианта нет на диске — оставляем как есть, статус предложит докачать
+            if (want != null && !HashMatches(Stored(want), want)) continue;
+            if (File.Exists(target))
             {
-                string name = Path.GetFileName(f.Path);
-                string inLocal = Path.Combine(LocalDir, name), inStore = Path.Combine(StoreDir, name);
-                bool want = lang == GameLanguage.Russian && on.Contains(c.Id);
-                if (want && !HashMatches(inLocal, f) && HashMatches(inStore, f))
-                    MoveKnown(inStore, inLocal, f);
-                else if (!want && HashMatches(inLocal, f))
-                    MoveKnown(inLocal, inStore, f);
+                var current = variants.Select(x => x.f).FirstOrDefault(f => HashMatches(target, f));
+                if (current != null)
+                    MoveKnown(target, Stored(current), current);
+                else if (want != null || Path.GetDirectoryName(target)!.Equals(LocalDir, StringComparison.OrdinalIgnoreCase))
+                {
+                    Directory.CreateDirectory(OldDir);
+                    File.Move(target, Path.Combine(OldDir, Path.GetFileName(target)), overwrite: true);
+                }
             }
+            if (want != null)
+            {
+                Directory.CreateDirectory(Path.GetDirectoryName(target)!);
+                MoveKnown(Stored(want), target, want);
+            }
+        }
         State.Language = lang;
         State.Selected = on;
         State.Save();
