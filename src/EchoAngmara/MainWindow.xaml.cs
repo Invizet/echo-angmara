@@ -259,12 +259,12 @@ public partial class MainWindow : Window
         }
         else
         {
-            bool fresh = _l10n.State.InstalledVersion == null;
-            L10nText.Text = fresh
-                ? T("l10n.not_installed", ("версия", _manifest.Version), ("размер", Size(missing)))
-                : T("l10n.update_available", ("версия", _manifest.Version), ("размер", Size(missing)));
+            // «вышла» — только если версия перевода действительно новая; та же версия = докачать недостающее
+            string kind = _l10n.State.InstalledVersion == null ? "not_installed"
+                : _l10n.State.InstalledVersion == _manifest.Version ? "files_missing" : "update_available";
+            L10nText.Text = T("l10n." + kind, ("версия", _manifest.Version), ("размер", Size(missing)));
             L10nText.Foreground = (Brush)FindResource("GoldBright");
-            L10nButton.Content = T(fresh ? "l10n.button_download" : "l10n.button_update");
+            L10nButton.Content = T(kind switch { "not_installed" => "l10n.button_download", "files_missing" => "l10n.button_repair", _ => "l10n.button_update" });
             L10nButton.Visibility = Visibility.Visible;
         }
     }
