@@ -51,7 +51,9 @@ class PostsParser(HTMLParser):
         a = dict(attrs)
         cls = a.get("class", "") or ""
         if "tgme_widget_message " in cls + " " and a.get("data-post"):
-            self.cur = {"id": int(a["data-post"].rsplit("/", 1)[1]), "photos": [], "date": None}
+            self.cur = {"id": int(a["data-post"].rsplit("/", 1)[1]), "photos": [], "date": None,
+                        # «… pinned a photo», смена аватарки и прочие служебные сообщения канала
+                        "service": "service_message" in cls.split()}
             self.posts.append(self.cur)
             return
         if self.cur is None:
@@ -121,7 +123,7 @@ def main():
 
     p = PostsParser(args.channel)
     p.feed(fetch(f"https://t.me/s/{args.channel}").decode("utf-8"))
-    posts = [x for x in p.posts if x.get("html") or x["photos"]]
+    posts = [x for x in p.posts if not x["service"] and (x.get("html") or x["photos"])]
     posts.sort(key=lambda x: x["id"], reverse=True)
     posts = posts[: args.limit]
     if not posts:
